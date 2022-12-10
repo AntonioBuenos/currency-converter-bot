@@ -2,6 +2,7 @@ package by.smirnov.currencyconverterbot.service;
 
 import by.smirnov.currencyconverterbot.entity.Currency;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Component
 public class NbrbCurrencyConversionService implements CurrencyConversionService {
 
     public static final String NBRB_RATES_URL = "https://www.nbrb.by/api/exrates/rates/";
@@ -57,6 +59,7 @@ public class NbrbCurrencyConversionService implements CurrencyConversionService 
             while ((inputLine = reader.readLine()) != null) {
                 response.append(inputLine);
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

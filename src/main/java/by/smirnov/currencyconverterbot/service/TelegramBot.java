@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final CurrencyModeService currencyModeService = CurrencyModeService.getInstance();
+    private final CurrencyModeService currencyModeService;
     private final CurrencyConversionService currencyConversionService =
             CurrencyConversionService.getInstance();
     private final BotConfig botConfig;

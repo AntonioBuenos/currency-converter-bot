@@ -4,10 +4,6 @@ import by.smirnov.currencyconverterbot.entity.Currency;
 
 public interface CurrencyModeService {
 
-    static CurrencyModeService getInstance() {
-        return new HashMapCurrencyModeService();
-    }
-
     Currency getOriginalCurrency(long chatId);
 
     Currency getTargetCurrency(long chatId);

@@ -1,10 +1,12 @@
 package by.smirnov.currencyconverterbot.service;
 
 import by.smirnov.currencyconverterbot.entity.Currency;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class HashMapCurrencyModeService implements CurrencyModeService {
     private final Map<Long, Currency> originalCurrency = new HashMap<>();
     private final Map<Long, Currency> targetCurrency = new HashMap<>();
