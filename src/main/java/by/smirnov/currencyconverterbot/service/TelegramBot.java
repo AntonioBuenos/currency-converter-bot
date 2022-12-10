@@ -26,8 +26,7 @@ import java.util.Optional;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final CurrencyModeService currencyModeService;
-    private final CurrencyConversionService currencyConversionService =
-            CurrencyConversionService.getInstance();
+    private final CurrencyConversionService currencyConversionService;
     private final BotConfig botConfig;
     private final MessageSender messageSender;
     public static final String COMMAND_SET_CURRENCY = "/set_currency";
