@@ -3,7 +3,6 @@ package by.smirnov.currencyconverterbot.service;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.Currency;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -14,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    @SneakyThrows
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
         String[] param = callbackQuery.getData().split(":");
@@ -69,15 +68,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     .callbackData(TARGET + ":" + currency)
                                     .build()));
         }
-        execute(
-                EditMessageReplyMarkup.builder()
-                        .chatId(message.getChatId().toString())
-                        .messageId(message.getMessageId())
-                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                        .build());
+        try {
+            execute(
+                    EditMessageReplyMarkup.builder()
+                            .chatId(message.getChatId().toString())
+                            .messageId(message.getMessageId())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
-    @SneakyThrows
     private void handleMessage(Message message) {
         // handle command
         if (message.hasText() && message.hasEntities()) {
@@ -103,21 +105,37 @@ public class TelegramBot extends TelegramLongPollingBot {
                                                     .callbackData(TARGET + ":" + currency)
                                                     .build()));
                         }
-                        execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
+                        try {
+                            execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
                         return;
                 }
             }
         }
         if (message.hasText()) {
-            String messageText = message.getText();
-            Optional<Double> value = parseDouble(messageText);
+            handleTextMessage(message);
+        }
+    }
+
+    private void handleCommandMessage(Message message) {
+
+    }
+
+    private void handleTextMessage(Message message) {
+        String messageText = message.getText();
+        Optional<Double> value = parseDouble(messageText);
+        if (value.isPresent()) {
             Currency originalCurrency = currencyModeService.getOriginalCurrency(message.getChatId());
             Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
             double ratio = currencyConversionService.getConversionRatio(originalCurrency, targetCurrency);
-            if (value.isPresent()) {
-                String rateMessage = String.format(FORMAT_RATES_RESPONSE,
-                        value.get(), originalCurrency, (value.get() * ratio), targetCurrency);
+            String rateMessage = String.format(FORMAT_RATES_RESPONSE,
+                    value.get(), originalCurrency, (value.get() * ratio), targetCurrency);
+            try {
                 execute(messageSender.sendMessage(message, rateMessage));
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -144,7 +162,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getToken();
     }
 
-    private String getCommand(Message message, Optional<MessageEntity> commandEntity){
+    private String getCommand(Message message, Optional<MessageEntity> commandEntity) {
         return message
                 .getText()
                 .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
