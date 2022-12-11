@@ -83,36 +83,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void handleMessage(Message message) {
         // handle command
         if (message.hasText() && message.hasEntities()) {
-            Optional<MessageEntity> commandEntity =
-                    message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
-            if (commandEntity.isPresent()) {
-                String command = this.getCommand(message, commandEntity);
-                switch (command) {
-                    case COMMAND_SET_CURRENCY:
-                        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-                        Currency originalCurrency =
-                                currencyModeService.getOriginalCurrency(message.getChatId());
-                        Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
-                        for (Currency currency : Currency.values()) {
-                            buttons.add(
-                                    Arrays.asList(
-                                            InlineKeyboardButton.builder()
-                                                    .text(getCurrencyButton(originalCurrency, currency))
-                                                    .callbackData(ORIGINAL + ":" + currency)
-                                                    .build(),
-                                            InlineKeyboardButton.builder()
-                                                    .text(getCurrencyButton(targetCurrency, currency))
-                                                    .callbackData(TARGET + ":" + currency)
-                                                    .build()));
-                        }
-                        try {
-                            execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
-                        return;
-                }
-            }
+            handleCommandMessage(message);
+            return;
         }
         if (message.hasText()) {
             handleTextMessage(message);
@@ -120,7 +92,35 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void handleCommandMessage(Message message) {
-
+        Optional<MessageEntity> commandEntity =
+                message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+        if (commandEntity.isPresent()) {
+            String command = this.getCommand(message, commandEntity);
+            switch (command) {
+                case COMMAND_SET_CURRENCY:
+                    List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+                    Currency originalCurrency =
+                            currencyModeService.getOriginalCurrency(message.getChatId());
+                    Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
+                    for (Currency currency : Currency.values()) {
+                        buttons.add(
+                                Arrays.asList(
+                                        InlineKeyboardButton.builder()
+                                                .text(getCurrencyButton(originalCurrency, currency))
+                                                .callbackData(ORIGINAL + ":" + currency)
+                                                .build(),
+                                        InlineKeyboardButton.builder()
+                                                .text(getCurrencyButton(targetCurrency, currency))
+                                                .callbackData(TARGET + ":" + currency)
+                                                .build()));
+                    }
+                    try {
+                        execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
     }
 
     private void handleTextMessage(Message message) {
