@@ -1,8 +1,8 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.repository;
 
 import by.smirnov.currencyconverterbot.entity.Currency;
 
-public interface CurrencyModeService {
+public interface CurrencyRepository {
 
     Currency getOriginalCurrency(long chatId);
 

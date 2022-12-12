@@ -2,6 +2,7 @@ package by.smirnov.currencyconverterbot.service;
 
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.Currency;
+import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final CurrencyModeService currencyModeService;
+    private final CurrencyRepository currencyRepository;
     private final CurrencyConversionService currencyConversionService;
     private final BotConfig botConfig;
     private final MessageSender messageSender;
@@ -50,12 +51,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         String action = param[0];
         Currency newCurrency = Currency.valueOf(param[1]);
         switch (action) {
-            case ORIGINAL -> currencyModeService.setOriginalCurrency(message.getChatId(), newCurrency);
-            case TARGET -> currencyModeService.setTargetCurrency(message.getChatId(), newCurrency);
+            case ORIGINAL -> currencyRepository.setOriginalCurrency(message.getChatId(), newCurrency);
+            case TARGET -> currencyRepository.setTargetCurrency(message.getChatId(), newCurrency);
         }
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        Currency originalCurrency = currencyModeService.getOriginalCurrency(message.getChatId());
-        Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
+        Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
+        Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
         for (Currency currency : Currency.values()) {
             buttons.add(
                     Arrays.asList(
@@ -100,8 +101,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case COMMAND_SET_CURRENCY:
                     List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
                     Currency originalCurrency =
-                            currencyModeService.getOriginalCurrency(message.getChatId());
-                    Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
+                            currencyRepository.getOriginalCurrency(message.getChatId());
+                    Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
                     for (Currency currency : Currency.values()) {
                         buttons.add(
                                 Arrays.asList(
@@ -127,8 +128,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         String messageText = message.getText();
         Optional<Double> value = parseDouble(messageText);
         if (value.isPresent()) {
-            Currency originalCurrency = currencyModeService.getOriginalCurrency(message.getChatId());
-            Currency targetCurrency = currencyModeService.getTargetCurrency(message.getChatId());
+            Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
+            Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
             double ratio = currencyConversionService.getConversionRatio(originalCurrency, targetCurrency);
             String rateMessage = String.format(FORMAT_RATES_RESPONSE,
                     value.get(), originalCurrency, (value.get() * ratio), targetCurrency);
@@ -167,5 +168,4 @@ public class TelegramBot extends TelegramLongPollingBot {
                 .getText()
                 .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
     }
-
 }

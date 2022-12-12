@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.repository;
 
 import by.smirnov.currencyconverterbot.entity.Currency;
 import org.springframework.stereotype.Service;
@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class HashMapCurrencyModeService implements CurrencyModeService {
+public class HashMapCurrencyRepository implements CurrencyRepository {
     private final Map<Long, Currency> originalCurrency = new HashMap<>();
     private final Map<Long, Currency> targetCurrency = new HashMap<>();
 
-    public HashMapCurrencyModeService() {
+    public HashMapCurrencyRepository() {
         System.out.println("HASHMAP MODE is created");
     }
 
