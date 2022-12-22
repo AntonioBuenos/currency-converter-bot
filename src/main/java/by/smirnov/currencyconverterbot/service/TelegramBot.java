@@ -55,21 +55,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             case ORIGINAL -> currencyRepository.setOriginalCurrency(message.getChatId(), newCurrency);
             case TARGET -> currencyRepository.setTargetCurrency(message.getChatId(), newCurrency);
         }
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
         Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
-        for (Currency currency : Currency.values()) {
-            buttons.add(
-                    Arrays.asList(
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(originalCurrency, currency))
-                                    .callbackData(ORIGINAL + DELIM + currency)
-                                    .build(),
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(targetCurrency, currency))
-                                    .callbackData(TARGET + DELIM + currency)
-                                    .build()));
-        }
+        List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
         try {
             execute(
                     EditMessageReplyMarkup.builder()
@@ -100,22 +88,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             String command = this.getCommand(message, commandEntity);
             switch (command) {
                 case COMMAND_SET_CURRENCY:
-                    List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+
                     Currency originalCurrency =
                             currencyRepository.getOriginalCurrency(message.getChatId());
                     Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
-                    for (Currency currency : Currency.values()) {
-                        buttons.add(
-                                Arrays.asList(
-                                        InlineKeyboardButton.builder()
-                                                .text(getCurrencyButton(originalCurrency, currency))
-                                                .callbackData(ORIGINAL + DELIM + currency)
-                                                .build(),
-                                        InlineKeyboardButton.builder()
-                                                .text(getCurrencyButton(targetCurrency, currency))
-                                                .callbackData(TARGET + DELIM + currency)
-                                                .build()));
-                    }
+                    List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
                     try {
                         execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
                     } catch (TelegramApiException e) {
@@ -123,6 +100,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                     }
             }
         }
+    }
+
+    private List<List<InlineKeyboardButton>> getButtons(Currency originalCurrency, Currency targetCurrency){
+        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+        for (Currency currency : Currency.values()) {
+            buttons.add(
+                    Arrays.asList(
+                            InlineKeyboardButton.builder()
+                                    .text(getCurrencyButton(originalCurrency, currency))
+                                    .callbackData(ORIGINAL + DELIM + currency)
+                                    .build(),
+                            InlineKeyboardButton.builder()
+                                    .text(getCurrencyButton(targetCurrency, currency))
+                                    .callbackData(TARGET + DELIM + currency)
+                                    .build()));
+        }
+        return buttons;
     }
 
     private void handleTextMessage(Message message) {
