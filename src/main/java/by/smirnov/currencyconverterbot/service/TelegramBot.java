@@ -35,6 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final String TARGET = "TARGET";
     public static final String MESSAGE_CHOOSE_CURRENCIES = "Please choose Original and Target currencies";
     public static final String FORMAT_RATES_RESPONSE = "%4.2f %s is %4.2f %s";
+    public static final String DELIM = ":";
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -47,7 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
-        String[] param = callbackQuery.getData().split(":");
+        String[] param = callbackQuery.getData().split(DELIM);
         String action = param[0];
         Currency newCurrency = Currency.valueOf(param[1]);
         switch (action) {
@@ -62,11 +63,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Arrays.asList(
                             InlineKeyboardButton.builder()
                                     .text(getCurrencyButton(originalCurrency, currency))
-                                    .callbackData(ORIGINAL + ":" + currency)
+                                    .callbackData(ORIGINAL + DELIM + currency)
                                     .build(),
                             InlineKeyboardButton.builder()
                                     .text(getCurrencyButton(targetCurrency, currency))
-                                    .callbackData(TARGET + ":" + currency)
+                                    .callbackData(TARGET + DELIM + currency)
                                     .build()));
         }
         try {
@@ -108,11 +109,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 Arrays.asList(
                                         InlineKeyboardButton.builder()
                                                 .text(getCurrencyButton(originalCurrency, currency))
-                                                .callbackData(ORIGINAL + ":" + currency)
+                                                .callbackData(ORIGINAL + DELIM + currency)
                                                 .build(),
                                         InlineKeyboardButton.builder()
                                                 .text(getCurrencyButton(targetCurrency, currency))
-                                                .callbackData(TARGET + ":" + currency)
+                                                .callbackData(TARGET + DELIM + currency)
                                                 .build()));
                     }
                     try {
