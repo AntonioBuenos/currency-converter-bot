@@ -92,9 +92,11 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Currency originalCurrency =
                             currencyRepository.getOriginalCurrency(message.getChatId());
                     Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
-                    List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
                     try {
-                        execute(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
+                        execute(messageSender.sendMessage(
+                                message,
+                                MESSAGE_CHOOSE_CURRENCIES,
+                                getButtons(originalCurrency, targetCurrency)));
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
