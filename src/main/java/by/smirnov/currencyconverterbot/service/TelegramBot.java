@@ -58,6 +58,16 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
+    public String getBotUsername() {
+        return botConfig.getBotName();
+    }
+
+    @Override
+    public String getBotToken() {
+        return botConfig.getToken();
+    }
+
+    @Override
     public void onUpdateReceived(Update update) {
         if (update.hasCallbackQuery()) {
             handleCallback(update.getCallbackQuery());
@@ -91,7 +101,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void handleMessage(Message message) {
-        // handle command
         if (message.hasText() && message.hasEntities()) {
             handleCommandMessage(message);
             return;
@@ -120,20 +129,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                         log.error(e.getMessage());
                     }
                 }
-                case COMMAND_TODAY_RATES -> {
-                    try {
-                        execute(messageSender.sendMessage(message, todayRateService.getTodayRates()));
-                    } catch (TelegramApiException e) {
-                        log.error(e.getMessage());
-                    }
-                }
-                default -> {
-                    try {
-                        execute(messageSender.sendMessage(message, "Command not recognized!"));
-                    } catch (TelegramApiException e) {
-                        log.error(e.getMessage());
-                    }
-                }
+                case COMMAND_TODAY_RATES -> executeMessage(message, todayRateService.getTodayRates());
+                default -> executeMessage(message, "Command not recognized!");
             }
         }
     }
@@ -156,19 +153,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void handleTextMessage(Message message) {
-        String messageText = message.getText();
-        Optional<Double> value = parseDouble(messageText);
+        Optional<Double> value = parseDouble(message.getText());
         if (value.isPresent()) {
             Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
             Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
             double ratio = currencyConversionService.getConversionRatio(originalCurrency, targetCurrency);
             String rateMessage = String.format(FORMAT_RATES_RESPONSE,
                     value.get(), originalCurrency, (value.get() * ratio), targetCurrency);
-            try {
-                execute(messageSender.sendMessage(message, rateMessage));
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            executeMessage(message, rateMessage);
         }
     }
 
@@ -184,19 +176,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         return saved == current ? current + " ✅" : current.name();
     }
 
-    @Override
-    public String getBotUsername() {
-        return botConfig.getBotName();
-    }
-
-    @Override
-    public String getBotToken() {
-        return botConfig.getToken();
-    }
-
     private String getCommand(Message message, Optional<MessageEntity> commandEntity) {
         return message
                 .getText()
                 .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
+    }
+
+    private void executeMessage(Message message, String messageText) {
+        try {
+            execute(messageSender.sendMessage(message, messageText));
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
     }
 }
