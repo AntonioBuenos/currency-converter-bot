@@ -3,15 +3,16 @@ package by.smirnov.currencyconverterbot.service;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.Currency;
 import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -21,9 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_SET_CURRENCY;
+import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_TODAY_RATES;
+import static by.smirnov.currencyconverterbot.service.Constants.FORMAT_RATES_RESPONSE;
+import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_CHOOSE_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.Constants.ORIGINAL;
+import static by.smirnov.currencyconverterbot.service.Constants.TARGET;
+
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final CurrencyRepository currencyRepository;
@@ -31,12 +38,24 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final MessageSender messageSender;
     private final TodayRateService todayRateService;
-    public static final String COMMAND_SET_CURRENCY = "/set_currency";
-    public static final String ORIGINAL = "ORIGINAL";
-    public static final String TARGET = "TARGET";
-    public static final String MESSAGE_CHOOSE_CURRENCIES = "Please choose Original and Target currencies";
-    public static final String FORMAT_RATES_RESPONSE = "%4.2f %s is %4.2f %s";
     public static final String DELIM = ":";
+
+    public TelegramBot(CurrencyRepository currencyRepository,
+                       CurrencyConversionService currencyConversionService,
+                       BotConfig botConfig,
+                       MessageSender messageSender,
+                       TodayRateService todayRateService) {
+        this.currencyRepository = currencyRepository;
+        this.currencyConversionService = currencyConversionService;
+        this.botConfig = botConfig;
+        this.messageSender = messageSender;
+        this.todayRateService = todayRateService;
+        try {
+            this.execute(new SetMyCommands(CommandListInit.getCommands(), new BotCommandScopeDefault(), null));
+        } catch (TelegramApiException e) {
+            log.error("Error setting bot's command list: " + e.getMessage());
+        }
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -101,7 +120,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         log.error(e.getMessage());
                     }
                 }
-                case "/today_rates" -> {
+                case COMMAND_TODAY_RATES -> {
                     try {
                         execute(messageSender.sendMessage(message, todayRateService.getTodayRates()));
                     } catch (TelegramApiException e) {
