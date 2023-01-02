@@ -30,6 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CurrencyConversionService currencyConversionService;
     private final BotConfig botConfig;
     private final MessageSender messageSender;
+    private final TodayRateService todayRateService;
     public static final String COMMAND_SET_CURRENCY = "/set_currency";
     public static final String ORIGINAL = "ORIGINAL";
     public static final String TARGET = "TARGET";
@@ -87,8 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (commandEntity.isPresent()) {
             String command = this.getCommand(message, commandEntity);
             switch (command) {
-                case COMMAND_SET_CURRENCY:
-
+                case COMMAND_SET_CURRENCY -> {
                     Currency originalCurrency =
                             currencyRepository.getOriginalCurrency(message.getChatId());
                     Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
@@ -98,13 +98,28 @@ public class TelegramBot extends TelegramLongPollingBot {
                                 MESSAGE_CHOOSE_CURRENCIES,
                                 getButtons(originalCurrency, targetCurrency)));
                     } catch (TelegramApiException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage());
                     }
+                }
+                case "/today_rates" -> {
+                    try {
+                        execute(messageSender.sendMessage(message, todayRateService.getTodayRates()));
+                    } catch (TelegramApiException e) {
+                        log.error(e.getMessage());
+                    }
+                }
+                default -> {
+                    try {
+                        execute(messageSender.sendMessage(message, "Command not recognized!"));
+                    } catch (TelegramApiException e) {
+                        log.error(e.getMessage());
+                    }
+                }
             }
         }
     }
 
-    private List<List<InlineKeyboardButton>> getButtons(Currency originalCurrency, Currency targetCurrency){
+    private List<List<InlineKeyboardButton>> getButtons(Currency originalCurrency, Currency targetCurrency) {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         for (Currency currency : Currency.values()) {
             buttons.add(

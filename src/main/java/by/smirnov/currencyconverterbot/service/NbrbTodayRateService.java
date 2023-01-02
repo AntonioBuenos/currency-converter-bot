@@ -1,44 +1,43 @@
 package by.smirnov.currencyconverterbot.service;
 
-import by.smirnov.currencyconverterbot.entity.Currency;
 import by.smirnov.currencyconverterbot.entity.Rate;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.StringJoiner;
 
 @Service
+@Slf4j
 public class NbrbTodayRateService implements TodayRateService{
 
     public static final String NBRB_TODAY_RATE_URL = "https://www.nbrb.by/api/exrates/rates?periodicity=0";
 
     @Override
-    public Map<Currency, Double> getTodayRates(){
-        Map<Currency, Double> todayRates = new HashMap<>();
+    public String getTodayRates(){
         ObjectMapper mapper = new ObjectMapper();
-        List<Rate> rates = new ArrayList<>();
+        List<Rate> rates = null;
         try {
             rates = mapper.readValue(new URL(NBRB_TODAY_RATE_URL), new TypeReference<>(){});
-        } catch (JsonProcessingException | MalformedURLException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
         }
-        for (Rate rate : rates) {
-            System.out.println(rate);
-        }
-        return todayRates;
+        return getRatesInfo(rates);
     }
 
-    public static void main(String[] args) {
-        new NbrbTodayRateService().getTodayRates();
+    String getRatesInfo(List<Rate> rates){
+        String header = String.format("Официальные курсы НБРБ на %tF:", rates.get(0).getDate());
+        StringJoiner joiner = new StringJoiner("\n");
+joiner.add(header);
+        for (Rate rate : rates) {
+            String rateInfo = String.format("%s (%d) = %f BYN", rate.getName(), rate.getScale(), rate.getOfficialRate());
+            joiner.add(rateInfo);
+        }
+        return joiner.toString();
     }
+
 }

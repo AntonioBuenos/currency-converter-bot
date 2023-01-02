@@ -1,10 +1,10 @@
 package by.smirnov.currencyconverterbot.service;
 
-import by.smirnov.currencyconverterbot.entity.Currency;
+import by.smirnov.currencyconverterbot.entity.Rate;
 
-import java.util.Map;
+import java.util.List;
 
 public interface TodayRateService {
 
-    Map<Currency, Double> getTodayRates();
+    String getTodayRates();
 }
