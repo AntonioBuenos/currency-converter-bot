@@ -20,7 +20,7 @@ public class NbrbTodayRateService implements TodayRateService {
     public static final String NBRB_TODAY_RATE_URL = "https://www.nbrb.by/api/exrates/rates?periodicity=0";
     public static final String NBRB_RATES_MESSAGE = "Официальные курсы валют, установленные Национальным банком РБ на %s г.:";
     public static final String DATE_PATTERN = "d MMMM yyyy";
-    public static final String RATE_LINE_FORMAT = "%s (%d) = %f BYN";
+    public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
     public static final String DELIMITER = "\n";
 
     @Override
