@@ -1,7 +1,7 @@
 package by.smirnov.currencyconverterbot.service;
 
 import by.smirnov.currencyconverterbot.config.BotConfig;
-import by.smirnov.currencyconverterbot.entity.Currency;
+import by.smirnov.currencyconverterbot.entity.Currencies;
 import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_SET_CURRENCY;
+import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_START;
 import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_TODAY_RATES;
 import static by.smirnov.currencyconverterbot.service.Constants.FORMAT_RATES_RESPONSE;
 import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_CHOOSE_CURRENCIES;
@@ -38,18 +39,20 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final MessageSender messageSender;
     private final TodayRateService todayRateService;
+    private final CurrencyService currencyService;
     public static final String DELIM = ":";
 
     public TelegramBot(CurrencyRepository currencyRepository,
                        CurrencyConversionService currencyConversionService,
                        BotConfig botConfig,
                        MessageSender messageSender,
-                       TodayRateService todayRateService) {
+                       TodayRateService todayRateService, CurrencyService currencyService) {
         this.currencyRepository = currencyRepository;
         this.currencyConversionService = currencyConversionService;
         this.botConfig = botConfig;
         this.messageSender = messageSender;
         this.todayRateService = todayRateService;
+        this.currencyService = currencyService;
         try {
             this.execute(new SetMyCommands(CommandListInit.getCommands(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -81,13 +84,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId = message.getChatId();
         String[] param = callbackQuery.getData().split(DELIM);
         String action = param[0];
-        Currency newCurrency = Currency.valueOf(param[1]);
+        Currencies newCurrency = Currencies.valueOf(param[1]);
         switch (action) {
             case ORIGINAL -> currencyRepository.setOriginalCurrency(chatId, newCurrency);
             case TARGET -> currencyRepository.setTargetCurrency(chatId, newCurrency);
         }
-        Currency originalCurrency = currencyRepository.getOriginalCurrency(chatId);
-        Currency targetCurrency = currencyRepository.getTargetCurrency(chatId);
+        Currencies originalCurrency = currencyRepository.getOriginalCurrency(chatId);
+        Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
         List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
         try {
             execute(
@@ -117,10 +120,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (commandEntity.isPresent()) {
             String command = this.getCommand(message, commandEntity);
             switch (command) {
+                case COMMAND_START -> executeMessage(message,
+                        "Вас приветствует бот курсов валют! Используйте меню команд.");
                 case COMMAND_SET_CURRENCY -> {
-                    Currency originalCurrency =
+                    Currencies originalCurrency =
                             currencyRepository.getOriginalCurrency(message.getChatId());
-                    Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
+                    Currencies targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
                     try {
                         execute(messageSender.sendMessage(
                                 message,
@@ -136,9 +141,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private List<List<InlineKeyboardButton>> getButtons(Currency originalCurrency, Currency targetCurrency) {
+    private List<List<InlineKeyboardButton>> getButtons(Currencies originalCurrency, Currencies targetCurrency) {
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        for (Currency currency : Currency.values()) {
+        for (Currencies currency : Currencies.values()) {
             buttons.add(
                     Arrays.asList(
                             InlineKeyboardButton.builder()
@@ -156,8 +161,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void handleTextMessage(Message message) {
         Optional<Double> value = parseDouble(message.getText());
         if (value.isPresent()) {
-            Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
-            Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
+            Currencies originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
+            Currencies targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
             double ratio = currencyConversionService.getConversionRatio(originalCurrency, targetCurrency);
             String rateMessage = String.format(FORMAT_RATES_RESPONSE,
                     value.get(), originalCurrency, (value.get() * ratio), targetCurrency);
@@ -173,7 +178,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private String getCurrencyButton(Currency saved, Currency current) {
+    private String getCurrencyButton(Currencies saved, Currencies current) {
         return saved == current ? current + " ✅" : current.name();
     }
 
