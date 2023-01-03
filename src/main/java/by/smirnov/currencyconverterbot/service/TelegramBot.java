@@ -78,20 +78,21 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
+        Long chatId = message.getChatId();
         String[] param = callbackQuery.getData().split(DELIM);
         String action = param[0];
         Currency newCurrency = Currency.valueOf(param[1]);
         switch (action) {
-            case ORIGINAL -> currencyRepository.setOriginalCurrency(message.getChatId(), newCurrency);
-            case TARGET -> currencyRepository.setTargetCurrency(message.getChatId(), newCurrency);
+            case ORIGINAL -> currencyRepository.setOriginalCurrency(chatId, newCurrency);
+            case TARGET -> currencyRepository.setTargetCurrency(chatId, newCurrency);
         }
-        Currency originalCurrency = currencyRepository.getOriginalCurrency(message.getChatId());
-        Currency targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
+        Currency originalCurrency = currencyRepository.getOriginalCurrency(chatId);
+        Currency targetCurrency = currencyRepository.getTargetCurrency(chatId);
         List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
         try {
             execute(
                     EditMessageReplyMarkup.builder()
-                            .chatId(message.getChatId().toString())
+                            .chatId(chatId.toString())
                             .messageId(message.getMessageId())
                             .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
                             .build());
