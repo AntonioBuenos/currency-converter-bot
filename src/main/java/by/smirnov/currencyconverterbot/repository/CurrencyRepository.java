@@ -1,14 +1,14 @@
 package by.smirnov.currencyconverterbot.repository;
 
-import by.smirnov.currencyconverterbot.entity.Currency;
+import by.smirnov.currencyconverterbot.entity.Currencies;
 
 public interface CurrencyRepository {
 
-    Currency getOriginalCurrency(long chatId);
+    Currencies getOriginalCurrency(long chatId);
 
-    Currency getTargetCurrency(long chatId);
+    Currencies getTargetCurrency(long chatId);
 
-    void setOriginalCurrency(long chatId, Currency currency);
+    void setOriginalCurrency(long chatId, Currencies currency);
 
-    void setTargetCurrency(long chatId, Currency currency);
+    void setTargetCurrency(long chatId, Currencies currency);
 }

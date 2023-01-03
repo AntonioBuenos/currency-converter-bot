@@ -1,6 +1,6 @@
 package by.smirnov.currencyconverterbot.service;
 
-import by.smirnov.currencyconverterbot.entity.Currency;
+import by.smirnov.currencyconverterbot.entity.Currencies;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
@@ -20,14 +20,14 @@ public class NbrbCurrencyConversionService implements CurrencyConversionService 
     public static final String GET_METHOD = "GET";
 
     @Override
-    public double getConversionRatio(Currency original, Currency target) {
+    public double getConversionRatio(Currencies original, Currencies target) {
         double originalRate = getRate(original);
         double targetRate = getRate(target);
         return originalRate / targetRate;
     }
 
-    private double getRate(Currency currency) {
-        if (currency == Currency.BYN) {
+    private double getRate(Currencies currency) {
+        if (currency == Currencies.BYN) {
             return 1;
         }
         JSONObject json = getRateJson(getRateUrl(currency));
@@ -37,7 +37,7 @@ public class NbrbCurrencyConversionService implements CurrencyConversionService 
         return rate / scale;
     }
 
-    private URL getRateUrl(Currency currency) {
+    private URL getRateUrl(Currencies currency) {
         try {
             return new URL(NBRB_RATES_URL + currency.getId());
         } catch (MalformedURLException e) {
