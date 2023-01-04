@@ -15,7 +15,7 @@ public class TodayRateButtonsServiceImpl implements TodayRateButtonsService{
     public static final String TODAY_ALL_CURRENCIES = "today_all_currencies";
 
     @Override
-    public SendMessage getTodayRateButtons(Long chatId) {
+    public SendMessage getButtons(Long chatId) {
         SendMessage message = new SendMessage(); //создаем объект отправки сообщений
         message.setChatId(String.valueOf(chatId)); //определяем ID чата
         message.setText("Выберите курсы основных валют или курсы всех валют, устанавливаемых НБРБ:"); //и сообщение к отправке

@@ -24,12 +24,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_LIST_INIT_ERROR;
 import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_SET_CURRENCY;
 import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_START;
 import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_TODAY_RATES;
+import static by.smirnov.currencyconverterbot.service.Constants.CONVERSION_ERROR;
+import static by.smirnov.currencyconverterbot.service.Constants.EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.service.Constants.ERROR;
 import static by.smirnov.currencyconverterbot.service.Constants.FORMAT_RATES_RESPONSE;
+import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_BAD_COMMAND;
 import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_CHOOSE_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_START;
 import static by.smirnov.currencyconverterbot.service.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.service.Constants.TARGET;
 import static by.smirnov.currencyconverterbot.service.TodayRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
@@ -44,7 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final MessageSender messageSender;
     private final TodayRateService todayRateService;
-    private final CurrencyService currencyService;
     private final TodayRateButtonsService todayRateButtonsService;
     public static final String DELIM = ":";
 
@@ -52,18 +56,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                        CurrencyConversionService currencyConversionService,
                        BotConfig botConfig,
                        MessageSender messageSender,
-                       TodayRateService todayRateService, CurrencyService currencyService, TodayRateButtonsService todayRateButtonsService) {
+                       TodayRateService todayRateService,
+                       TodayRateButtonsService todayRateButtonsService) {
         this.currencyRepository = currencyRepository;
         this.currencyConversionService = currencyConversionService;
         this.botConfig = botConfig;
         this.messageSender = messageSender;
         this.todayRateService = todayRateService;
-        this.currencyService = currencyService;
         this.todayRateButtonsService = todayRateButtonsService;
+        initCommandsList();
+    }
+
+    private void initCommandsList() {
         try {
-            this.execute(new SetMyCommands(CommandListInit.getCommands(), new BotCommandScopeDefault(), null));
+            this.execute(
+                    new SetMyCommands(CommandListInit.getCommands(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
-            log.error("Error setting bot's command list: " + e.getMessage());
+            log.error(COMMAND_LIST_INIT_ERROR, e.getMessage());
         }
     }
 
@@ -89,51 +98,51 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void handleCallback(CallbackQuery callbackQuery) {
         Message message = callbackQuery.getMessage();
         String callbackData = callbackQuery.getData();
-        Long chatId = message.getChatId();
-        Long messageId = (long) message.getMessageId();
-        if(callbackData.equals(TODAY_MAIN_CURRENCIES)){
+        long chatId = message.getChatId();
+        long messageId = message.getMessageId();
+        if (callbackData.equals(TODAY_MAIN_CURRENCIES)) {
             executeEditMessageText(todayRateService.getTodayMainRates(), chatId, messageId);
         } else if (callbackData.equals(TODAY_ALL_CURRENCIES)) {
             executeEditMessageText(todayRateService.getTodayRates(), chatId, messageId);
-        }
-        else {
-            String[] param = callbackQuery.getData().split(DELIM);
-            String action = param[0];
-            Currencies newCurrency = Currencies.valueOf(param[1]);
-            switch (action) {
-                case ORIGINAL -> currencyRepository.setOriginalCurrency(chatId, newCurrency);
-                case TARGET -> currencyRepository.setTargetCurrency(chatId, newCurrency);
-            }
-            Currencies originalCurrency = currencyRepository.getOriginalCurrency(chatId);
-            Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
-            List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
-            try {
-                execute(
-                        EditMessageReplyMarkup.builder()
-                                .chatId(chatId.toString())
-                                .messageId(message.getMessageId())
-                                .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                                .build());
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
+        } else processConversion(message, callbackQuery, chatId);
 
+    }
+
+    private void processConversion(Message message, CallbackQuery callbackQuery, long chatId) {
+        String[] param = callbackQuery.getData().split(DELIM);
+        String action = param[0];
+        Currencies newCurrency = Currencies.valueOf(param[1]);
+        switch (action) {
+            case ORIGINAL -> currencyRepository.setOriginalCurrency(chatId, newCurrency);
+            case TARGET -> currencyRepository.setTargetCurrency(chatId, newCurrency);
+        }
+        Currencies originalCurrency = currencyRepository.getOriginalCurrency(chatId);
+        Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
+        List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
+        try {
+            execute(
+                    EditMessageReplyMarkup.builder()
+                            .chatId(String.valueOf(chatId))
+                            .messageId(message.getMessageId())
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+        } catch (TelegramApiException e) {
+            log.error(CONVERSION_ERROR, e.getMessage());
+        }
     }
 
     private void executeEditMessageText(String text, long chatId, long messageId) {
-        EditMessageText message = new EditMessageText(); //объект измененного текста сообщения
-        message.setChatId(String.valueOf(chatId)); //устанавливаем сообщению ID чата
-        message.setText(text); //и новый текст
-        message.setMessageId((int) messageId); //и ID сообщения
+        EditMessageText message = new EditMessageText();
+        message.setChatId(chatId);
+        message.setText(text);
+        message.setMessageId((int) messageId);
 
         try {
-            execute(message); //исполнение изменения сообщения
+            execute(message);
         } catch (TelegramApiException e) {
-            log.error(ERROR, e.getMessage());
+            log.error(EDIT_MESSAGE_ERROR, e.getMessage());
         }
     }
-
 
     private void handleMessage(Message message) {
         if (message.hasText() && message.hasEntities()) {
@@ -148,27 +157,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void handleCommandMessage(Message message) {
         Optional<MessageEntity> commandEntity =
                 message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+
         if (commandEntity.isPresent()) {
+            long chatId = message.getChatId();
             String command = this.getCommand(message, commandEntity);
+
             switch (command) {
-                case COMMAND_START -> executeMessage(message,
-                        "Вас приветствует бот курсов валют! Используйте меню команд.");
+                case COMMAND_START -> executeMessage(message, MESSAGE_START);
                 case COMMAND_SET_CURRENCY -> {
                     Currencies originalCurrency =
-                            currencyRepository.getOriginalCurrency(message.getChatId());
-                    Currencies targetCurrency = currencyRepository.getTargetCurrency(message.getChatId());
-                    try {
-                        execute(messageSender.sendMessage(
-                                message,
-                                MESSAGE_CHOOSE_CURRENCIES,
-                                getButtons(originalCurrency, targetCurrency)));
-                    } catch (TelegramApiException e) {
-                        log.error(e.getMessage());
-                    }
+                            currencyRepository.getOriginalCurrency(chatId);
+                    Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
+                    var buttons = getButtons(originalCurrency, targetCurrency);
+                    executeMessage(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
                 }
-                case COMMAND_TODAY_RATES -> executeMessage(todayRateButtonsService.getTodayRateButtons(message.getChatId()));
-/*                        executeMessage(message, todayRateService.getTodayMainRates());*/
-                default -> executeMessage(message, "Command not recognized!");
+                case COMMAND_TODAY_RATES -> executeMessage(todayRateButtonsService.getButtons(chatId));
+                default -> executeMessage(message, MESSAGE_BAD_COMMAND);
             }
         }
     }
