@@ -10,4 +10,5 @@ public interface Constants {
     String TARGET = "TARGET";
     String MESSAGE_CHOOSE_CURRENCIES = "Please choose Original and Target currencies";
     String FORMAT_RATES_RESPONSE = "%4.2f %s is %4.2f %s";
+    String ERROR = "Error occurred: {}";
 }
