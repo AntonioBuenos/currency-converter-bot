@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -33,7 +34,7 @@ public class Rate {
 
     @JsonSetter("Date")
     @Column(name = "date")
-    private Timestamp date;
+    private LocalDate date;
 
     @JsonSetter("Cur_Abbreviation")
     @Column(name = "abbreviation")

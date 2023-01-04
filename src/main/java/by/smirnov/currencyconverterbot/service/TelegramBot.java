@@ -135,7 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         log.error(e.getMessage());
                     }
                 }
-                case COMMAND_TODAY_RATES -> executeMessage(message, todayRateService.getTodayRates());
+                case COMMAND_TODAY_RATES -> executeMessage(message, todayRateService.getTodayMainRates());
                 default -> executeMessage(message, "Command not recognized!");
             }
         }

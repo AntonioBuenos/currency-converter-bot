@@ -7,4 +7,5 @@ import java.util.List;
 public interface TodayRateService {
 
     String getTodayRates();
+    String getTodayMainRates();
 }
