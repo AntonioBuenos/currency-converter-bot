@@ -84,7 +84,7 @@ public class NbrbTodayRateService implements TodayRateService {
 
     private List<Rate> getAndSaveRates(){
         List<Rate> rates = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         try {
             rates = mapper.readValue(new URL(NBRB_TODAY_RATE_URL), new TypeReference<>() {
             });
