@@ -8,6 +8,8 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -21,9 +23,13 @@ import java.sql.Timestamp;
 public class Rate {
 
     @Id
-    @JsonSetter("Cur_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @JsonSetter("Cur_ID")
+    @Column(name = "cur_id")
+    private Long curId;
 
     @JsonSetter("Date")
     @Column(name = "date")
