@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.service.conversion;
 
 import by.smirnov.currencyconverterbot.entity.Currencies;
 import org.json.JSONObject;

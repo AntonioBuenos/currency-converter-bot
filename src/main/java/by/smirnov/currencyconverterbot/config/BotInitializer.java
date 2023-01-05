@@ -1,6 +1,6 @@
 package by.smirnov.currencyconverterbot.config;
 
-import by.smirnov.currencyconverterbot.service.TelegramBot;
+import by.smirnov.currencyconverterbot.controller.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;

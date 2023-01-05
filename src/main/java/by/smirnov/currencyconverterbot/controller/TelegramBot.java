@@ -1,8 +1,13 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.controller;
 
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.Currencies;
 import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
+import by.smirnov.currencyconverterbot.service.commands.CommandListInit;
+import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
+import by.smirnov.currencyconverterbot.service.message.MessageSender;
+import by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsService;
+import by.smirnov.currencyconverterbot.service.todayrate.TodayRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -24,21 +29,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_LIST_INIT_ERROR;
-import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_SET_CURRENCY;
-import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_START;
-import static by.smirnov.currencyconverterbot.service.Constants.COMMAND_TODAY_RATES;
-import static by.smirnov.currencyconverterbot.service.Constants.CONVERSION_ERROR;
-import static by.smirnov.currencyconverterbot.service.Constants.EDIT_MESSAGE_ERROR;
-import static by.smirnov.currencyconverterbot.service.Constants.ERROR;
-import static by.smirnov.currencyconverterbot.service.Constants.FORMAT_RATES_RESPONSE;
-import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_BAD_COMMAND;
-import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_CHOOSE_CURRENCIES;
-import static by.smirnov.currencyconverterbot.service.Constants.MESSAGE_START;
-import static by.smirnov.currencyconverterbot.service.Constants.ORIGINAL;
-import static by.smirnov.currencyconverterbot.service.Constants.TARGET;
-import static by.smirnov.currencyconverterbot.service.TodayRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.service.TodayRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_LIST_INIT_ERROR;
+import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_SET_CURRENCY;
+import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_START;
+import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TODAY_RATES;
+import static by.smirnov.currencyconverterbot.constants.Constants.CONVERSION_ERROR;
+import static by.smirnov.currencyconverterbot.constants.Constants.EDIT_MESSAGE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.Constants.ERROR;
+import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
+import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_COMMAND;
+import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_CHOOSE_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
+import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
+import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
+import static by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
 
 @Component
 @Slf4j

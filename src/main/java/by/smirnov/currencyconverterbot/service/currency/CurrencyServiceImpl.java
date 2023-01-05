@@ -1,7 +1,6 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.service.currency;
 
 import by.smirnov.currencyconverterbot.entity.Currency;
-import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.CurrenciesRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,9 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor

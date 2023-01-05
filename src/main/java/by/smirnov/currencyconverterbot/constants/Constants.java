@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.constants;
 
 public interface Constants {
 

@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.service.todayrate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.TodayRateRepository;
@@ -10,11 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,7 @@ public class NbrbTodayRateService implements TodayRateService {
     public String getTodayRates() {
         LocalDate date = LocalDate.now();
         List<Rate> rates = repository.findAllByDate(date);
-        if(rates.isEmpty()){
+        if (rates.isEmpty()) {
             rates = getAndSaveRates();
         }
         return formatRatesInfo(rates, date);
@@ -55,12 +51,10 @@ public class NbrbTodayRateService implements TodayRateService {
         return formatRatesInfo(rates, date);
     }
 
-    private Rate findTodayRate(Long curId, LocalDate date){
+    private Rate findTodayRate(Long curId, LocalDate date) {
         Optional<Rate> rate = repository.findByCurIdAndDate(curId, date);
-        if(rate.isPresent()) return rate.get();
-        else {
-            getAndSaveRates();
-        }
+        if (rate.isPresent()) return rate.get();
+        else getAndSaveRates();
         return repository.findByCurIdAndDate(curId, date).orElse(null);
     }
 
@@ -70,19 +64,30 @@ public class NbrbTodayRateService implements TodayRateService {
         joiner.add(header);
         for (Rate rate : rates) {
             String rateInfo;
-            if(rate == null) rateInfo = RATE_NOT_FOUND;
+            if (rate == null) rateInfo = RATE_NOT_FOUND;
             else rateInfo = String.format(RATE_LINE_FORMAT, rate.getName(), rate.getScale(), rate.getOfficialRate());
             joiner.add(rateInfo);
         }
         return joiner.toString();
     }
 
-    private String formatDate(LocalDate date){
+    private String formatDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         return date.format(formatter);
     }
 
-    private List<Rate> getAndSaveRates(){
+    private List<Rate> getAndSaveRates() {
+        List<Rate> rates = getRates();
+        for (Rate rate : rates) {
+            if (
+                    repository.findByCurIdAndDate(rate.getCurId(), rate.getDate())
+                            .isEmpty()
+            ) repository.save(rate);
+        }
+        return rates;
+    }
+
+    private List<Rate> getRates(){
         List<Rate> rates = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         try {
@@ -91,15 +96,7 @@ public class NbrbTodayRateService implements TodayRateService {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        for (Rate rate : rates) {
-            if(repository.findByCurIdAndDate(rate.getCurId(), rate.getDate()).isEmpty())
-            repository.save(rate);
-        }
         return rates;
-    }
-
-    private Timestamp getToday(){
-        return Timestamp.valueOf(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
     }
 
 }

@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.service.todayrate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 

@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service;
+package by.smirnov.currencyconverterbot.service.todayrate;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
