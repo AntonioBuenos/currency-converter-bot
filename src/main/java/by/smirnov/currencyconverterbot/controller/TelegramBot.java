@@ -3,10 +3,11 @@ package by.smirnov.currencyconverterbot.controller;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.Currencies;
 import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
+import by.smirnov.currencyconverterbot.service.buttons.ExchangeButtonsService;
 import by.smirnov.currencyconverterbot.service.commands.CommandListInit;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.message.MessageSender;
-import by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsService;
+import by.smirnov.currencyconverterbot.service.buttons.TodayRateButtonsService;
 import by.smirnov.currencyconverterbot.service.todayrate.TodayRateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +33,7 @@ import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_SET_CU
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_START;
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TODAY_RATES;
 import static by.smirnov.currencyconverterbot.constants.Constants.CONVERSION_ERROR;
+import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
 import static by.smirnov.currencyconverterbot.constants.Constants.EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.Constants.ERROR;
 import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
@@ -42,8 +42,8 @@ import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_CHOOSE
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
 import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
-import static by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.service.todayrate.TodayRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.buttons.TodayRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.buttons.TodayRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
 
 @Component
 @Slf4j
@@ -55,20 +55,21 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final MessageSender messageSender;
     private final TodayRateService todayRateService;
     private final TodayRateButtonsService todayRateButtonsService;
-    public static final String DELIM = ":";
+    private final ExchangeButtonsService exchangeButtonsService;
 
     public TelegramBot(CurrencyRepository currencyRepository,
                        CurrencyConversionService currencyConversionService,
                        BotConfig botConfig,
                        MessageSender messageSender,
                        TodayRateService todayRateService,
-                       TodayRateButtonsService todayRateButtonsService) {
+                       TodayRateButtonsService todayRateButtonsService, ExchangeButtonsService exchangeButtonsService) {
         this.currencyRepository = currencyRepository;
         this.currencyConversionService = currencyConversionService;
         this.botConfig = botConfig;
         this.messageSender = messageSender;
         this.todayRateService = todayRateService;
         this.todayRateButtonsService = todayRateButtonsService;
+        this.exchangeButtonsService = exchangeButtonsService;
         initCommandsList();
     }
 
@@ -104,7 +105,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Message message = callbackQuery.getMessage();
         String callbackData = callbackQuery.getData();
         long chatId = message.getChatId();
-        long messageId = message.getMessageId();
+        int messageId = message.getMessageId();
         if (callbackData.equals(TODAY_MAIN_CURRENCIES)) {
             executeEditMessageText(todayRateService.getTodayMainRates(), chatId, messageId);
         } else if (callbackData.equals(TODAY_ALL_CURRENCIES)) {
@@ -121,26 +122,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             case ORIGINAL -> currencyRepository.setOriginalCurrency(chatId, newCurrency);
             case TARGET -> currencyRepository.setTargetCurrency(chatId, newCurrency);
         }
-        Currencies originalCurrency = currencyRepository.getOriginalCurrency(chatId);
-        Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
-        List<List<InlineKeyboardButton>> buttons = getButtons(originalCurrency, targetCurrency);
-        try {
-            execute(
-                    EditMessageReplyMarkup.builder()
-                            .chatId(String.valueOf(chatId))
-                            .messageId(message.getMessageId())
-                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                            .build());
-        } catch (TelegramApiException e) {
-            log.error(CONVERSION_ERROR, e.getMessage());
-        }
+            executeMessage(exchangeButtonsService.getButtons(message, chatId));
     }
 
-    private void executeEditMessageText(String text, long chatId, long messageId) {
+    private void executeEditMessageText(String text, long chatId, int messageId) {
         EditMessageText message = new EditMessageText();
         message.setChatId(chatId);
         message.setText(text);
-        message.setMessageId((int) messageId);
+        message.setMessageId(messageId);
 
         try {
             execute(message);
@@ -151,34 +140,27 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void handleMessage(Message message) {
         if (message.hasText() && message.hasEntities()) {
-            handleCommandMessage(message);
-            return;
+            Optional<MessageEntity> commandEntity =
+                    message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+            if (commandEntity.isPresent()) {
+                handleCommandMessage(message, commandEntity.get());
+                return;
+            }
         }
         if (message.hasText()) {
             handleTextMessage(message);
         }
     }
 
-    private void handleCommandMessage(Message message) {
-        Optional<MessageEntity> commandEntity =
-                message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+    private void handleCommandMessage(Message message, MessageEntity commandEntity) {
+        long chatId = message.getChatId();
+        String command = this.getCommand(message, commandEntity);
 
-        if (commandEntity.isPresent()) {
-            long chatId = message.getChatId();
-            String command = this.getCommand(message, commandEntity);
-
-            switch (command) {
-                case COMMAND_START -> executeMessage(message, MESSAGE_START);
-                case COMMAND_SET_CURRENCY -> {
-                    Currencies originalCurrency =
-                            currencyRepository.getOriginalCurrency(chatId);
-                    Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
-                    var buttons = getButtons(originalCurrency, targetCurrency);
-                    executeMessage(messageSender.sendMessage(message, MESSAGE_CHOOSE_CURRENCIES, buttons));
-                }
-                case COMMAND_TODAY_RATES -> executeMessage(todayRateButtonsService.getButtons(chatId));
-                default -> executeMessage(message, MESSAGE_BAD_COMMAND);
-            }
+        switch (command) {
+            case COMMAND_START -> executeMessage(message, MESSAGE_START);
+            case COMMAND_SET_CURRENCY -> executeMessage(exchangeButtonsService.getButtons(message));
+            case COMMAND_TODAY_RATES -> executeMessage(todayRateButtonsService.getButtons(chatId));
+            default -> executeMessage(message, MESSAGE_BAD_COMMAND);
         }
     }
 
@@ -188,23 +170,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(ERROR, e.getMessage());
         }
-    }
-
-    private List<List<InlineKeyboardButton>> getButtons(Currencies originalCurrency, Currencies targetCurrency) {
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        for (Currencies currency : Currencies.values()) {
-            buttons.add(
-                    Arrays.asList(
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(originalCurrency, currency))
-                                    .callbackData(ORIGINAL + DELIM + currency)
-                                    .build(),
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(targetCurrency, currency))
-                                    .callbackData(TARGET + DELIM + currency)
-                                    .build()));
-        }
-        return buttons;
     }
 
     private void handleTextMessage(Message message) {
@@ -227,14 +192,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private String getCurrencyButton(Currencies saved, Currencies current) {
-        return saved == current ? current + " ✅" : current.name();
-    }
-
-    private String getCommand(Message message, Optional<MessageEntity> commandEntity) {
+    private String getCommand(Message message, MessageEntity commandEntity) {
         return message
                 .getText()
-                .substring(commandEntity.get().getOffset(), commandEntity.get().getLength());
+                .substring(commandEntity.getOffset(), commandEntity.getLength());
     }
 
     private void executeMessage(Message message, String messageText) {
@@ -242,6 +203,14 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(messageSender.sendMessage(message, messageText));
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+        }
+    }
+
+    private void executeMessage(EditMessageReplyMarkup message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            log.error(CONVERSION_ERROR, e.getMessage());
         }
     }
 }

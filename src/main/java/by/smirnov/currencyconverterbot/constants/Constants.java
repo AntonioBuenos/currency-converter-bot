@@ -16,4 +16,5 @@ public interface Constants {
     String EDIT_MESSAGE_ERROR = "Error of editing message text method: {}";
     String MESSAGE_BAD_COMMAND = "Command not recognized!";
     String MESSAGE_START = "Вас приветствует бот курсов валют! Используйте меню команд.";
+    String DELIM = ":";
 }
