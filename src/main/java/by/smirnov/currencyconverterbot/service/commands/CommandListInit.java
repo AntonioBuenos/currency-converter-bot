@@ -1,7 +1,9 @@
 package by.smirnov.currencyconverterbot.service.commands;
 
 import lombok.experimental.UtilityClass;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,8 @@ public class CommandListInit {
         listofCommands.add(new BotCommand(COMMAND_HELP, "info how to use this bot"));
     }
 
-    public static List<BotCommand> getCommands(){
-        return listofCommands;
+    public static SetMyCommands getCommands(){
+        return new SetMyCommands(listofCommands, new BotCommandScopeDefault(), null);
     }
 
 }

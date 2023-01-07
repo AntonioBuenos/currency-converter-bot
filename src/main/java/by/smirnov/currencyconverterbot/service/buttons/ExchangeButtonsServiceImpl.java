@@ -1,7 +1,7 @@
 package by.smirnov.currencyconverterbot.service.buttons;
 
-import by.smirnov.currencyconverterbot.entity.Currencies;
-import by.smirnov.currencyconverterbot.repository.CurrencyRepository;
+import by.smirnov.currencyconverterbot.entity.MainCurrencies;
+import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
 import by.smirnov.currencyconverterbot.service.message.MessageSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,9 @@ import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 @RequiredArgsConstructor
 public class ExchangeButtonsServiceImpl implements ExchangeButtonsService{
 
-    private final CurrencyRepository currencyRepository;
+    private final MainCurrencyRepository mainCurrencyRepository;
     private final MessageSender messageSender;
+    private static final String SIGN_CHOSEN = " ✅";
 
     public SendMessage getButtons (Message message){
         var buttons = getInlineKeyboard(message);
@@ -43,25 +44,26 @@ public class ExchangeButtonsServiceImpl implements ExchangeButtonsService{
 
     private List<List<InlineKeyboardButton>> getInlineKeyboard (Message message) {
         long chatId = message.getChatId();
-        Currencies originalCurrency = currencyRepository.getOriginalCurrency(chatId);
-        Currencies targetCurrency = currencyRepository.getTargetCurrency(chatId);
+        MainCurrencies originalCurrency = mainCurrencyRepository.getOriginalCurrency(chatId);
+        MainCurrencies targetCurrency = mainCurrencyRepository.getTargetCurrency(chatId);
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        for (Currencies currency : Currencies.values()) {
+        for (var currency : MainCurrencies.values()) {
             buttons.add(
                     Arrays.asList(
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(originalCurrency, currency))
-                                    .callbackData(ORIGINAL + DELIM + currency)
-                                    .build(),
-                            InlineKeyboardButton.builder()
-                                    .text(getCurrencyButton(targetCurrency, currency))
-                                    .callbackData(TARGET + DELIM + currency)
-                                    .build()));
+                            buildButton(ORIGINAL, originalCurrency, currency),
+                            buildButton(TARGET, targetCurrency, currency)));
         }
         return buttons;
     }
 
-    private String getCurrencyButton(Currencies saved, Currencies current) {
-        return saved == current ? current + " ✅" : current.name();
+    private String getCurrencyButton(MainCurrencies saved, MainCurrencies current) {
+        return saved == current ? current + SIGN_CHOSEN : current.name();
+    }
+
+    private InlineKeyboardButton buildButton(String callBack, MainCurrencies curType, MainCurrencies current){
+        return InlineKeyboardButton.builder()
+                .text(getCurrencyButton(curType, current))
+                .callbackData(callBack + DELIM + current)
+                .build();
     }
 }

@@ -1,8 +1,8 @@
 package by.smirnov.currencyconverterbot.service.conversion;
 
 
-import by.smirnov.currencyconverterbot.entity.Currencies;
+import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 
 public interface CurrencyConversionService {
-        double getConversionRatio(Currencies original, Currencies target);
+        Double convert(MainCurrencies original, MainCurrencies target, double value);
 }

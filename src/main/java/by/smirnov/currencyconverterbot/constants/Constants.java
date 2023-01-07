@@ -14,7 +14,10 @@ public interface Constants {
     String COMMAND_LIST_INIT_ERROR = "Error setting bot's command list: {}";
     String CONVERSION_ERROR = "Error of conversion method: {}";
     String EDIT_MESSAGE_ERROR = "Error of editing message text method: {}";
+    String PARSE_ERROR = "Parsing error occured: {}";
+    String CONVERSION_NULL_ERROR = "Error of conversion method (some data is null): {}";
     String MESSAGE_BAD_COMMAND = "Command not recognized!";
     String MESSAGE_START = "Вас приветствует бот курсов валют! Используйте меню команд.";
     String DELIM = ":";
+    String COMMAND_KEY = "bot_command";
 }
