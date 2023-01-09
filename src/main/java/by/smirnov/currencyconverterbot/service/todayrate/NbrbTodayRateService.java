@@ -42,6 +42,7 @@ public class NbrbTodayRateService implements TodayRateService {
         return formatRatesInfo(rates, date);
     }
 
+    @Override
     public String getTodayMainRates() {
         List<Rate> rates = new ArrayList<>();
         LocalDate date = LocalDate.now();
@@ -51,7 +52,8 @@ public class NbrbTodayRateService implements TodayRateService {
         return formatRatesInfo(rates, date);
     }
 
-    private Rate findTodayRate(Long curId, LocalDate date) {
+    @Override
+    public Rate findTodayRate(Long curId, LocalDate date) {
         Optional<Rate> rate = repository.findByCurIdAndDate(curId, date);
         if (rate.isPresent()) return rate.get();
         else getAndSaveRates();
