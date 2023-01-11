@@ -8,7 +8,7 @@ import by.smirnov.currencyconverterbot.service.buttons.TodayRateButtonsService;
 import by.smirnov.currencyconverterbot.service.commands.CommandListInit;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.message.MessageSender;
-import by.smirnov.currencyconverterbot.service.todayrate.TodayRateService;
+import by.smirnov.currencyconverterbot.service.rate.TodayRateService;
 import by.smirnov.currencyconverterbot.util.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

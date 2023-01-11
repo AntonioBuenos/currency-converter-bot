@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface TodayRateRepository extends
+public interface RateRepository extends
         CrudRepository<Rate, Long>,
         JpaRepository<Rate, Long> {
 
@@ -17,4 +17,5 @@ public interface TodayRateRepository extends
 
     @Query("SELECT r FROM Rate r WHERE r.curId = ?1 AND r.date = ?2")
     Optional<Rate> findByCurIdAndDate(Long curId, LocalDate date);
+
 }

@@ -2,7 +2,7 @@ package by.smirnov.currencyconverterbot.service.conversion;
 
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.entity.Rate;
-import by.smirnov.currencyconverterbot.service.todayrate.TodayRateService;
+import by.smirnov.currencyconverterbot.service.rate.TodayRateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

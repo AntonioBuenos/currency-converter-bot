@@ -1,7 +1,7 @@
-package by.smirnov.currencyconverterbot.service.todayrate;
+package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
-import by.smirnov.currencyconverterbot.repository.TodayRateRepository;
+import by.smirnov.currencyconverterbot.repository.RateRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class NbrbTodayRateService implements TodayRateService {
     public static final String DELIMITER = "\n";
     private static final Long[] MAIN_CUR_IDS = {431L, 451L, 456L};
 
-    private final TodayRateRepository repository;
+    private final RateRepository repository;
 
     @Override
     public String getTodayRates() {
