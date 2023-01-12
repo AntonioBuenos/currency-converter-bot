@@ -2,14 +2,11 @@ package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import by.smirnov.currencyconverterbot.service.client.NbrbRateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,7 +19,6 @@ import java.util.StringJoiner;
 @RequiredArgsConstructor
 public class NbrbTodayRateService implements TodayRateService {
 
-    public static final String NBRB_TODAY_RATE_URL = "https://www.nbrb.by/api/exrates/rates?periodicity=0";
     public static final String NBRB_RATES_MESSAGE = "Официальные курсы валют, установленные Национальным банком РБ на %s г.:";
     public static final String RATE_NOT_FOUND = "курс не найден";
     public static final String DATE_PATTERN = "d LLLL yyyy";
@@ -31,6 +27,7 @@ public class NbrbTodayRateService implements TodayRateService {
     private static final Long[] MAIN_CUR_IDS = {431L, 451L, 456L};
 
     private final RateRepository repository;
+    private final NbrbRateClient nbrbRateClient;
 
     @Override
     public String getTodayRates() {
@@ -79,7 +76,7 @@ public class NbrbTodayRateService implements TodayRateService {
     }
 
     private List<Rate> getAndSaveRates() {
-        List<Rate> rates = getRates();
+        List<Rate> rates = nbrbRateClient.getRates();
         for (Rate rate : rates) {
             if (
                     repository.findByCurIdAndDate(rate.getCurId(), rate.getDate())
@@ -88,17 +85,4 @@ public class NbrbTodayRateService implements TodayRateService {
         }
         return rates;
     }
-
-    private List<Rate> getRates(){
-        List<Rate> rates = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-        try {
-            rates = mapper.readValue(new URL(NBRB_TODAY_RATE_URL), new TypeReference<>() {
-            });
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return rates;
-    }
-
 }
