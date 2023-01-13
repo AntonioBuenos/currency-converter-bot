@@ -15,8 +15,8 @@ public interface RateRepository extends
 
     List<Rate> findAllByDate(LocalDate date);
 
-    @Query("SELECT r FROM Rate r WHERE r.curId = ?1 AND r.date = ?2")
-    Optional<Rate> findByCurIdAndDate(Long curId, LocalDate date);
+/*    @Query("SELECT r FROM Rate r WHERE r.curId = ?1 AND r.date = ?2")
+    Optional<Rate> findByCurIdAndDate(Long curId, LocalDate date);*/
 
     Optional<Rate> findRateByCurIdAndDate(Long curId, LocalDate date);
 

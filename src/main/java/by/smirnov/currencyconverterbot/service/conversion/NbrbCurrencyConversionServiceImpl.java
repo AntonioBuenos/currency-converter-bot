@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Primary
 public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionService{
 
     private final RateService rateService;

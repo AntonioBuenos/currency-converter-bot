@@ -28,22 +28,18 @@ public class RateServiceImpl implements RateService{
         Optional<Rate> rate = repository.findRateByCurIdAndDate(curId, date);
         if (rate.isPresent()) return rate.get();
         else getAndSaveRates(date);
-        return repository.findByCurIdAndDate(curId, date).orElse(null);
+        return repository.findRateByCurIdAndDate(curId, date).orElse(null);
     }
 
     public Rate getTodayRate(Long curId) {
         return getRateByDate(curId, LocalDate.now());
     }
 
-    public Rate getTomorrowsRate(Long curId) {
-        return getRateByDate(curId, LocalDate.now().plusDays(1));
-    }
-
     private void getAndSaveRates(LocalDate date) {
         List<Rate> rates = nbrbRateClient.getRates(date);
         for (Rate rate : rates) {
             if (
-                    repository.findByCurIdAndDate(rate.getCurId(), rate.getDate())
+                    repository.findRateByCurIdAndDate(rate.getCurId(), rate.getDate())
                             .isEmpty()
             ) repository.save(rate);
         }

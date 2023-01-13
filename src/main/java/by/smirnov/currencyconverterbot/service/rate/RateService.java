@@ -9,5 +9,4 @@ public interface RateService {
     List<Rate> getDaylyRates(LocalDate date);
     Rate getRateByDate(Long curId, LocalDate date);
     Rate getTodayRate(Long curId);
-    Rate getTomorrowsRate(Long curId);
 }

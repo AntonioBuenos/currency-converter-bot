@@ -16,8 +16,6 @@ import java.util.List;
 @Service
 @Slf4j
 public class NbrbRateClientImpl implements NbrbRateClient{
-
-    public static final String NBRB_TODAY_RATE_URL = "https://www.nbrb.by/api/exrates/rates?periodicity=0";
     public static final String NBRB_RATE_BY_DATE_URL = "https://www.nbrb.by/api/exrates/rates?ondate=%s&periodicity=0";
     public static final String DATE_PATTERN = "yyyy-M-D";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
