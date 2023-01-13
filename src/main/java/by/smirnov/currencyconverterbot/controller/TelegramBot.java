@@ -36,8 +36,11 @@ import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
 import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
+import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TOMORROW_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TOMORROW_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.HELP;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.SET_CURRENCY;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.START;
@@ -105,11 +108,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         String callbackData = callbackQuery.getData();
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
-        if (callbackData.equals(TODAY_MAIN_CURRENCIES)) {
-            editMessage(dailyRateService.getMainRates(TODAY), chatId, messageId);
-        } else if (callbackData.equals(TODAY_ALL_CURRENCIES)) {
-            editMessage(dailyRateService.getRates(TODAY), chatId, messageId);
-        } else processConversion(message, callbackData, chatId);
+        switch (callbackData) {
+            case TODAY_MAIN_CURRENCIES -> editMessage(dailyRateService.getMainRates(TODAY), chatId, messageId);
+            case TODAY_ALL_CURRENCIES -> editMessage(dailyRateService.getRates(TODAY), chatId, messageId);
+            case TOMORROW_MAIN_CURRENCIES -> editMessage(dailyRateService.getMainRates(TOMORROW), chatId, messageId);
+            case TOMORROW_ALL_CURRENCIES -> editMessage(dailyRateService.getRates(TOMORROW), chatId, messageId);
+            default -> processConversion(message, callbackData, chatId);
+        }
     }
 
     private void processConversion(Message message, String callbackData, long chatId) {
@@ -140,7 +145,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (START.equals(command)) executeMessage(message, MESSAGE_START);
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
         else if (TODAY_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TODAY));
-        else if (TOMORROW_RATES.equals(command)) executeMessage(message, "Данный функционал появится в ближайшее время");
+        else if (TOMORROW_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TOMORROW));
         else if (HELP.equals(command)) executeMessage(message, "Данный функционал появится в ближайшее время");
         else executeMessage(message, MESSAGE_BAD_COMMAND);
     }

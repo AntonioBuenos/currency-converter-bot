@@ -40,7 +40,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     public String getMainRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
         for (Long id : MAIN_CUR_IDS) {
-            rates.add(rateService.getTodayRate(id)); //to be changed
+            rates.add(rateService.getRateByDate(id, date));
         }
         return formatRatesInfo(rates, date);
     }
