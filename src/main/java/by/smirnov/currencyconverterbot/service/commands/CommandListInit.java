@@ -12,6 +12,7 @@ import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_HELP;
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_SET_CURRENCY;
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_START;
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TODAY_RATES;
+import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TOMORROW_RATES;
 
 @UtilityClass
 public class CommandListInit {
@@ -20,10 +21,9 @@ public class CommandListInit {
 
     static {
         listofCommands = new ArrayList<>();
-        listofCommands.add(new BotCommand(COMMAND_START, "get a welcome message"));
-        listofCommands.add(new BotCommand(COMMAND_SET_CURRENCY, "calculate currencies exchange amounts"));
-        listofCommands.add(new BotCommand(COMMAND_TODAY_RATES, "get today rates"));
-        listofCommands.add(new BotCommand(COMMAND_HELP, "info how to use this bot"));
+        for (Commands command : Commands.values()) {
+            listofCommands.add(new BotCommand(command.getCmd(), command.getMessage()));
+        }
     }
 
     public static SetMyCommands getCommands(){

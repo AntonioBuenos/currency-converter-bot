@@ -9,27 +9,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TodayRateButtonsServiceImpl implements TodayRateButtonsService {
+public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
 
-    public static final String TODAY_MAIN_CURRENCIES = "today_main_currencies";
-    public static final String TODAY_ALL_CURRENCIES = "today_all_currencies";
+    public static final String MAIN_CURRENCIES = "main_currencies";
+    public static final String ALL_CURRENCIES = "all_currencies";
     public static final String MAIN_CURRENCIES_NAME = "Основные валюты";
     public static final String ALL_CURRENCIES_NAME = "Все валюты";
-    public static final String TODAY_RATE_TYPE_MESSAGE =
+    public static final String DAYLY_RATE_TYPE_MESSAGE =
             "Выберите курсы основных валют или курсы всех валют, устанавливаемых НБРБ:";
 
     @Override
     public SendMessage getButtons(Long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText(TODAY_RATE_TYPE_MESSAGE);
+        message.setText(DAYLY_RATE_TYPE_MESSAGE);
 
         InlineKeyboardMarkup keybdMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
         List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
 
-        var yesButton = getButton(MAIN_CURRENCIES_NAME, TODAY_MAIN_CURRENCIES);
-        var noButton = getButton(ALL_CURRENCIES_NAME, TODAY_ALL_CURRENCIES);
+        var yesButton = getButton(MAIN_CURRENCIES_NAME, MAIN_CURRENCIES);
+        var noButton = getButton(ALL_CURRENCIES_NAME, ALL_CURRENCIES);
 
         buttonsRow.add(yesButton);
         buttonsRow.add(noButton);
