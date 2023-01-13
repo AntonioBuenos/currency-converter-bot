@@ -2,6 +2,7 @@ package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
+import by.smirnov.currencyconverterbot.service.client.NbrbRateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class RateServiceImpl implements RateService{
 
     private final RateRepository repository;
+    private final NbrbRateClient nbrbRateClient;
 
     @Override
     public List<Rate> getDaylyRates(LocalDate date) {
@@ -25,7 +27,7 @@ public class RateServiceImpl implements RateService{
     public Rate getRateByDate(Long curId, LocalDate date) {
         Optional<Rate> rate = repository.findRateByCurIdAndDate(curId, date);
         if (rate.isPresent()) return rate.get();
-        //else getAndSaveRates(); вставить метод получения курса с сайта
+        else getAndSaveRates();
         return repository.findByCurIdAndDate(curId, date).orElse(null);
     }
 
@@ -35,5 +37,16 @@ public class RateServiceImpl implements RateService{
 
     public Rate getTomorrowsRate(Long curId) {
         return getRateByDate(curId, LocalDate.now().plusDays(1));
+    }
+
+    private List<Rate> getAndSaveRates() {
+        List<Rate> rates = nbrbRateClient.getRates();
+        for (Rate rate : rates) {
+            if (
+                    repository.findByCurIdAndDate(rate.getCurId(), rate.getDate())
+                            .isEmpty()
+            ) repository.save(rate);
+        }
+        return rates;
     }
 }

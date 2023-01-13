@@ -2,19 +2,17 @@ package by.smirnov.currencyconverterbot.service.conversion;
 
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.entity.Rate;
-import by.smirnov.currencyconverterbot.service.rate.TodayRateService;
+import by.smirnov.currencyconverterbot.service.rate.RateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 @Primary
 public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionService{
 
-    private final TodayRateService todayRateService;
+    private final RateService rateService;
 
     @Override
     public Double convert(MainCurrencies original, MainCurrencies target, double value) {
@@ -31,7 +29,7 @@ public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionServ
         if (currency == MainCurrencies.BYN) {
             return 1;
         }
-        Rate todayRate = todayRateService.findTodayRate((long) currency.getId(), LocalDate.now());
+        Rate todayRate = rateService.getTodayRate((long) currency.getId());
         double rate = todayRate.getOfficialRate();
         double scale = todayRate.getScale();
 

@@ -2,7 +2,6 @@ package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
-import by.smirnov.currencyconverterbot.service.client.NbrbRateClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.StringJoiner;
 
 @Service
@@ -27,14 +25,14 @@ public class NbrbTodayRateService implements TodayRateService {
     private static final Long[] MAIN_CUR_IDS = {431L, 451L, 456L};
 
     private final RateRepository repository;
-    private final NbrbRateClient nbrbRateClient;
+    private final RateService rateService;
 
     @Override
     public String getTodayRates() {
         LocalDate date = LocalDate.now();
         List<Rate> rates = repository.findAllByDate(date);
         if (rates.isEmpty()) {
-            rates = getAndSaveRates();
+            rates = rateService.getDaylyRates(date);
         }
         return formatRatesInfo(rates, date);
     }
@@ -44,17 +42,9 @@ public class NbrbTodayRateService implements TodayRateService {
         List<Rate> rates = new ArrayList<>();
         LocalDate date = LocalDate.now();
         for (Long id : MAIN_CUR_IDS) {
-            rates.add(findTodayRate(id, date));
+            rates.add(rateService.getTodayRate(id));
         }
         return formatRatesInfo(rates, date);
-    }
-
-    @Override
-    public Rate findTodayRate(Long curId, LocalDate date) {
-        Optional<Rate> rate = repository.findByCurIdAndDate(curId, date);
-        if (rate.isPresent()) return rate.get();
-        else getAndSaveRates();
-        return repository.findByCurIdAndDate(curId, date).orElse(null);
     }
 
     private String formatRatesInfo(List<Rate> rates, LocalDate date) {
@@ -73,16 +63,5 @@ public class NbrbTodayRateService implements TodayRateService {
     private String formatDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         return date.format(formatter);
-    }
-
-    private List<Rate> getAndSaveRates() {
-        List<Rate> rates = nbrbRateClient.getRates();
-        for (Rate rate : rates) {
-            if (
-                    repository.findByCurIdAndDate(rate.getCurId(), rate.getDate())
-                            .isEmpty()
-            ) repository.save(rate);
-        }
-        return rates;
     }
 }

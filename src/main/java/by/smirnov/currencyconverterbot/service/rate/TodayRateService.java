@@ -8,5 +8,4 @@ public interface TodayRateService {
 
     String getTodayRates();
     String getTodayMainRates();
-    public Rate findTodayRate(Long curId, LocalDate date);
 }
