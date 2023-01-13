@@ -1,5 +1,7 @@
 package by.smirnov.currencyconverterbot.constants;
 
+import java.time.LocalDate;
+
 public interface Constants {
 
     String COMMAND_SET_CURRENCY = "/set_currency";
@@ -21,4 +23,6 @@ public interface Constants {
     String MESSAGE_START = "Вас приветствует бот курсов валют! Используйте меню команд.";
     String DELIM = ":";
     String COMMAND_KEY = "bot_command";
+    LocalDate TODAY = LocalDate.now();
+    LocalDate TOMORROW = TODAY.plusDays(1);
 }

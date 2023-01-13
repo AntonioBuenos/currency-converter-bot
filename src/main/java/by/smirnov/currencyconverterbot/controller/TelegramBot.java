@@ -8,7 +8,7 @@ import by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsService;
 import by.smirnov.currencyconverterbot.service.commands.CommandListInit;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.message.MessageSender;
-import by.smirnov.currencyconverterbot.service.rate.TodayRateService;
+import by.smirnov.currencyconverterbot.service.rate.DailyRateService;
 import by.smirnov.currencyconverterbot.util.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -35,11 +35,14 @@ import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_CO
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
 import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
-import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
+import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.service.commands.Commands.HELP;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.SET_CURRENCY;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.START;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.TODAY_RATES;
+import static by.smirnov.currencyconverterbot.service.commands.Commands.TOMORROW_RATES;
 
 @Component
 @Slf4j
@@ -49,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final CurrencyConversionService currencyConversionService;
     private final BotConfig botConfig;
     private final MessageSender messageSender;
-    private final TodayRateService todayRateService;
+    private final DailyRateService dailyRateService;
     private final DailyRateButtonsService dailyRateButtonsService;
     private final ExchangeButtonsService exchangeButtonsService;
 
@@ -57,14 +60,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                        CurrencyConversionService currencyConversionService,
                        BotConfig botConfig,
                        MessageSender messageSender,
-                       TodayRateService todayRateService,
+                       DailyRateService dailyRateService,
                        DailyRateButtonsService dailyRateButtonsService,
                        ExchangeButtonsService exchangeButtonsService) {
         this.mainCurrencyRepository = mainCurrencyRepository;
         this.currencyConversionService = currencyConversionService;
         this.botConfig = botConfig;
         this.messageSender = messageSender;
-        this.todayRateService = todayRateService;
+        this.dailyRateService = dailyRateService;
         this.dailyRateButtonsService = dailyRateButtonsService;
         this.exchangeButtonsService = exchangeButtonsService;
         initCommandsList();
@@ -102,10 +105,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         String callbackData = callbackQuery.getData();
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
-        if (callbackData.equals(MAIN_CURRENCIES)) {
-            editMessage(todayRateService.getTodayMainRates(), chatId, messageId);
-        } else if (callbackData.equals(ALL_CURRENCIES)) {
-            editMessage(todayRateService.getTodayRates(), chatId, messageId);
+        if (callbackData.equals(TODAY_MAIN_CURRENCIES)) {
+            editMessage(dailyRateService.getMainRates(TODAY), chatId, messageId);
+        } else if (callbackData.equals(TODAY_ALL_CURRENCIES)) {
+            editMessage(dailyRateService.getRates(TODAY), chatId, messageId);
         } else processConversion(message, callbackData, chatId);
     }
 
@@ -136,7 +139,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if (START.equals(command)) executeMessage(message, MESSAGE_START);
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
-        else if (TODAY_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId));
+        else if (TODAY_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TODAY));
+        else if (TOMORROW_RATES.equals(command)) executeMessage(message, "Данный функционал появится в ближайшее время");
+        else if (HELP.equals(command)) executeMessage(message, "Данный функционал появится в ближайшее время");
         else executeMessage(message, MESSAGE_BAD_COMMAND);
     }
 

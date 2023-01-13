@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class NbrbTodayRateService implements TodayRateService {
+public class DailyRateServiceImpl implements DailyRateService {
 
     public static final String NBRB_RATES_MESSAGE = "Официальные курсы валют, установленные Национальным банком РБ на %s г.:";
     public static final String RATE_NOT_FOUND = "курс не найден";
@@ -28,8 +28,7 @@ public class NbrbTodayRateService implements TodayRateService {
     private final RateService rateService;
 
     @Override
-    public String getTodayRates() {
-        LocalDate date = LocalDate.now();
+    public String getRates(LocalDate date) {
         List<Rate> rates = repository.findAllByDate(date);
         if (rates.isEmpty()) {
             rates = rateService.getDaylyRates(date);
@@ -38,11 +37,10 @@ public class NbrbTodayRateService implements TodayRateService {
     }
 
     @Override
-    public String getTodayMainRates() {
+    public String getMainRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
-        LocalDate date = LocalDate.now();
         for (Long id : MAIN_CUR_IDS) {
-            rates.add(rateService.getTodayRate(id));
+            rates.add(rateService.getTodayRate(id)); //to be changed
         }
         return formatRatesInfo(rates, date);
     }

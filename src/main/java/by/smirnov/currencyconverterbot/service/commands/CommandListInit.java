@@ -8,12 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_HELP;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_SET_CURRENCY;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_START;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TODAY_RATES;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_TOMORROW_RATES;
-
 @UtilityClass
 public class CommandListInit {
 
