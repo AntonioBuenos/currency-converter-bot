@@ -3,7 +3,7 @@ package by.smirnov.currencyconverterbot.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import static by.smirnov.currencyconverterbot.constants.Constants.PARSE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.PARSE_ERROR;
 
 @UtilityClass
 @Slf4j

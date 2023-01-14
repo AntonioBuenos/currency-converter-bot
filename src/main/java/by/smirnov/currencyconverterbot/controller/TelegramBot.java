@@ -25,11 +25,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.Optional;
 
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_KEY;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_LIST_INIT_ERROR;
-import static by.smirnov.currencyconverterbot.constants.Constants.CONVERSION_ERROR;
 import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
-import static by.smirnov.currencyconverterbot.constants.Constants.EDIT_MESSAGE_ERROR;
-import static by.smirnov.currencyconverterbot.constants.Constants.ERROR;
 import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_COMMAND;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
@@ -37,6 +33,11 @@ import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
 import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.COMMAND_LIST_INIT_ERROR;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.EDIT_MESSAGE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_EDIT_MESSAGE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_MESSAGE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_SEND_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TOMORROW_ALL_CURRENCIES;
@@ -178,7 +179,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error(ERROR, e.getMessage());
+            log.error(EXECUTE_SEND_MESSAGE_ERROR, e.getMessage());
         }
     }
 
@@ -186,7 +187,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(messageSender.sendMessage(message, messageText));
         } catch (TelegramApiException e) {
-            log.error(ERROR, e.getMessage());
+            log.error(EXECUTE_MESSAGE_ERROR, e.getMessage());
         }
     }
 
@@ -194,7 +195,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error(CONVERSION_ERROR, e.getMessage());
+            log.error(EXECUTE_EDIT_MESSAGE_ERROR, e.getMessage());
         }
     }
 }

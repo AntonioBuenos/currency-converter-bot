@@ -13,6 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_RATES_ERROR;
+
 @Service
 @Slf4j
 public class NbrbRateClientImpl implements NbrbRateClient{
@@ -29,7 +31,7 @@ public class NbrbRateClientImpl implements NbrbRateClient{
             rates = mapper.readValue(url, new TypeReference<>() {
             });
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(GET_RATES_ERROR, e.getMessage());
         }
         return rates;
     }

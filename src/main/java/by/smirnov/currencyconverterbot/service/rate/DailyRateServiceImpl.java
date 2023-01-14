@@ -3,7 +3,6 @@ package by.smirnov.currencyconverterbot.service.rate;
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.StringJoiner;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class DailyRateServiceImpl implements DailyRateService {
 

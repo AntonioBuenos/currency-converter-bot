@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_CURRENCIES_ERROR;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +32,7 @@ public class CurrencyServiceImpl implements CurrencyService{
             allCurrencies = mapper.readValue(new URL(NBRB_ALL_CURRENCIES_URL), new TypeReference<>() {
             });
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(GET_CURRENCIES_ERROR, e.getMessage());
         }
         for (Currency currency : allCurrencies) {
             if(repository.findById(currency.getId()).isEmpty()) {
