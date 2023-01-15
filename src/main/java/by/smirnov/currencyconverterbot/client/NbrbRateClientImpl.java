@@ -1,9 +1,10 @@
-package by.smirnov.currencyconverterbot.service.client;
+package by.smirnov.currencyconverterbot.client;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_RATES_ERROR;
 
-@Service
+@Component
 @Slf4j
 public class NbrbRateClientImpl implements NbrbRateClient{
     public static final String NBRB_RATE_BY_DATE_URL = "https://www.nbrb.by/api/exrates/rates?ondate=%s&periodicity=0";

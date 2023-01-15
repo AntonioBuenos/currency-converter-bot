@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service.client;
+package by.smirnov.currencyconverterbot.client;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 
