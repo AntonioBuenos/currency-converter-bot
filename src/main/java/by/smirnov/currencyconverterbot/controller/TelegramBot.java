@@ -7,6 +7,7 @@ import by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsService;
 import by.smirnov.currencyconverterbot.service.buttons.ExchangeButtonsService;
 import by.smirnov.currencyconverterbot.service.commands.CommandListInit;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
+import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
 import by.smirnov.currencyconverterbot.service.message.MessageSender;
 import by.smirnov.currencyconverterbot.service.rate.DailyRateService;
 import by.smirnov.currencyconverterbot.util.Parser;
@@ -49,6 +50,7 @@ import static by.smirnov.currencyconverterbot.service.commands.Commands.SPAM;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.START;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.TODAY_RATES;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.TOMORROW_RATES;
+import static by.smirnov.currencyconverterbot.service.commands.Commands.UPD_CURRENCIES;
 
 @Component
 @Slf4j
@@ -61,6 +63,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DailyRateService dailyRateService;
     private final DailyRateButtonsService dailyRateButtonsService;
     private final ExchangeButtonsService exchangeButtonsService;
+    private final CurrencyService currencyService;
 
     public TelegramBot(MainCurrencyRepository mainCurrencyRepository,
                        CurrencyConversionService currencyConversionService,
@@ -68,7 +71,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                        MessageSender messageSender,
                        DailyRateService dailyRateService,
                        DailyRateButtonsService dailyRateButtonsService,
-                       ExchangeButtonsService exchangeButtonsService) {
+                       ExchangeButtonsService exchangeButtonsService,
+                       CurrencyService currencyService) {
         this.mainCurrencyRepository = mainCurrencyRepository;
         this.currencyConversionService = currencyConversionService;
         this.botConfig = botConfig;
@@ -76,6 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.dailyRateService = dailyRateService;
         this.dailyRateButtonsService = dailyRateButtonsService;
         this.exchangeButtonsService = exchangeButtonsService;
+        this.currencyService = currencyService;
         initCommandsList();
     }
 
@@ -149,8 +154,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
         else if (TODAY_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TODAY));
         else if (TOMORROW_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TOMORROW));
+        else if (UPD_CURRENCIES.equals(command) && botConfig.getOwnerId() == chatId) {
+            executeMessage(message, currencyService.saveAll());
+        }
         else if (HELP.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
-        else if (SPAM.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
+        else if (SPAM.equals(command) && botConfig.getOwnerId() == chatId) {
+            executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
+        }
         else executeMessage(message, MESSAGE_BAD_COMMAND);
     }
 

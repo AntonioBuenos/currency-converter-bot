@@ -10,6 +10,7 @@ public enum Commands {
     TODAY_RATES("/today_rates", "Курсы на сегодня"),
     TOMORROW_RATES("/tomorrow_rates", "Курсы на завтра"),
     SPAM("/spam", "Отправить сообщения всем пользователям"),
+    UPD_CURRENCIES("/upd_currencies", "Загрузить обновление перечня валют с НБРБ"),
     HELP("/help", "Общая информация о боте");
 
     private final String cmd;

@@ -16,7 +16,9 @@ public class CommandListInit {
     static {
         listofCommands = new ArrayList<>();
         for (Commands command : Commands.values()) {
-            if(command != Commands.SPAM) listofCommands.add(new BotCommand(command.getCmd(), command.getMessage()));
+            if(command != Commands.SPAM && command != Commands.UPD_CURRENCIES) {
+                listofCommands.add(new BotCommand(command.getCmd(), command.getMessage()));
+            }
         }
     }
 
