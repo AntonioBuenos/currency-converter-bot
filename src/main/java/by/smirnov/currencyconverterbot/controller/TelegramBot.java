@@ -29,6 +29,7 @@ import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
 import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_COMMAND;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
+import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_UNDER_CONSTRUCTION;
 import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
@@ -44,6 +45,7 @@ import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsSe
 import static by.smirnov.currencyconverterbot.service.buttons.DailyRateButtonsServiceImpl.TOMORROW_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.HELP;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.SET_CURRENCY;
+import static by.smirnov.currencyconverterbot.service.commands.Commands.SPAM;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.START;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.TODAY_RATES;
 import static by.smirnov.currencyconverterbot.service.commands.Commands.TOMORROW_RATES;
@@ -147,7 +149,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
         else if (TODAY_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TODAY));
         else if (TOMORROW_RATES.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TOMORROW));
-        else if (HELP.equals(command)) executeMessage(message, "Данный функционал появится в ближайшее время");
+        else if (HELP.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
+        else if (SPAM.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
         else executeMessage(message, MESSAGE_BAD_COMMAND);
     }
 

@@ -9,6 +9,7 @@ public enum Commands {
     SET_CURRENCY("/set_currency", "Конвертер сумм в основных валютах"),
     TODAY_RATES("/today_rates", "Курсы на сегодня"),
     TOMORROW_RATES("/tomorrow_rates", "Курсы на завтра"),
+    SPAM("/spam", "Отправить сообщения всем пользователям"),
     HELP("/help", "Общая информация о боте");
 
     private final String cmd;

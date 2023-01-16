@@ -6,6 +6,7 @@ public interface Constants {
 
     String ORIGINAL = "ORIGINAL";
     String TARGET = "TARGET";
+    String MESSAGE_UNDER_CONSTRUCTION = "Данный функционал появится в ближайшее время";
     String MESSAGE_CHOOSE_CURRENCIES = "Please choose Original and Target currencies";
     String FORMAT_RATES_RESPONSE = "%4.2f %s is %4.2f %s";
     String MESSAGE_BAD_COMMAND = "Command not recognized!";
