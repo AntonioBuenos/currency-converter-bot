@@ -7,7 +7,7 @@ import static by.smirnov.currencyconverterbot.constants.LogConstants.PARSE_ERROR
 
 @UtilityClass
 @Slf4j
-public class Parser {
+public class DoubleParser {
 
     public static Double parseDouble(String messageText) {
         try {
