@@ -1,14 +1,21 @@
 package by.smirnov.currencyconverterbot.service.commands;
 
 import lombok.Getter;
+import org.checkerframework.checker.nullness.Opt;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Getter
 public enum Commands {
 
     START("/start", "Стартовая информация о боте"),
     SET_CURRENCY("/set_currency", "Конвертер сумм в основных валютах"),
-    TODAY_RATES("/today_rates", "Курсы на сегодня"),
-    TOMORROW_RATES("/tomorrow_rates", "Курсы на завтра"),
+    RATES_TODAY("/today_rates", "Курсы на сегодня"),
+    RATES_TOMORROW("/tomorrow_rates", "Курсы на завтра"),
+    RATES_BY_DATE("/by_date_rates", "Курсы на дату"),
     SPAM("/spam", "Отправить сообщения всем пользователям"),
     UPD_CURRENCIES("/upd_currencies", "Загрузить обновление перечня валют с НБРБ"),
     HELP("/help", "Общая информация о боте");
@@ -24,4 +31,12 @@ public enum Commands {
     public boolean equals(String cmd){
         return this.getCmd().equals(cmd);
     }
+
+    public static Commands findByCmd(String cmd){
+        return Arrays.stream(Commands.values())
+                .filter(v -> Objects.equals(v.getCmd(), cmd))
+                .findFirst()
+                .orElse(null);
+    }
+
 }
