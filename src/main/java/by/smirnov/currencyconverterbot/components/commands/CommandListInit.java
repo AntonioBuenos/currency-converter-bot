@@ -11,18 +11,17 @@ import java.util.List;
 @Component
 public class CommandListInit {
 
-    private final List<BotCommand> menuCommands;
-
-    {
-        menuCommands = new ArrayList<>();
-        for (Commands command : Commands.values()) {
-            if(command != Commands.SPAM && command != Commands.UPD_CURRENCIES) {
-                menuCommands.add(new BotCommand(command.getCmd(), command.getMessage()));
-            }
-        }
+    public CommandListInit() {
+        new SetMyCommands(getCommandsMenu(), new BotCommandScopeDefault(), null);
     }
 
-    public CommandListInit() {
-        new SetMyCommands(menuCommands, new BotCommandScopeDefault(), null);
+    private List<BotCommand> getCommandsMenu(){
+        List<BotCommand> commandsMenu = new ArrayList<>();
+        for (Commands command : Commands.values()) {
+            if(command != Commands.SPAM && command != Commands.UPD_CURRENCIES) {
+                commandsMenu.add(new BotCommand(command.getCmd(), command.getMessage()));
+            }
+        }
+        return commandsMenu;
     }
 }
