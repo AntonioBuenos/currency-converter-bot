@@ -2,10 +2,9 @@ package by.smirnov.currencyconverterbot.components.buttons;
 
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
-import by.smirnov.currencyconverterbot.service.message.MessageSender;
+import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Message;

@@ -8,7 +8,7 @@ import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
-import by.smirnov.currencyconverterbot.service.message.MessageSender;
+import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import by.smirnov.currencyconverterbot.service.rate.DailyRateService;
 import by.smirnov.currencyconverterbot.util.DateParser;
 import by.smirnov.currencyconverterbot.util.DoubleParser;

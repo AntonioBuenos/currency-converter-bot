@@ -1,7 +1,6 @@
 package by.smirnov.currencyconverterbot.components.buttons;
 
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -10,22 +9,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES_NAME;
+import static by.smirnov.currencyconverterbot.constants.Constants.DAYLY_RATE_TYPE_MESSAGE;
+import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES_NAME;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
+import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
+import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_CURRENCIES;
 
 @Component
 public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
-
-    public static final String MAIN_CURRENCIES = "main_currencies";
-    public static final String TODAY_MAIN_CURRENCIES = "today_main_currencies";
-    public static final String TOMORROW_MAIN_CURRENCIES = "tomorrow_main_currencies";
-    public static final String ALL_CURRENCIES = "all_currencies";
-    public static final String TODAY_ALL_CURRENCIES = "today_all_currencies";
-    public static final String TOMORROW_ALL_CURRENCIES = "tomorrow_all_currencies";
-    public static final String MAIN_CURRENCIES_NAME = "Основные валюты";
-    public static final String ALL_CURRENCIES_NAME = "Все валюты";
-    public static final String DAYLY_RATE_TYPE_MESSAGE =
-            "Выберите курсы основных валют или курсы всех валют, устанавливаемых НБРБ:";
 
     @Override
     public SendMessage getButtons(Long chatId, LocalDate date) {

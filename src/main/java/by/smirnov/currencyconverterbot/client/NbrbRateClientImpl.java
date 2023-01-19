@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,8 +19,8 @@ import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_RATES_E
 @Slf4j
 public class NbrbRateClientImpl implements NbrbRateClient{
     public static final String NBRB_RATE_BY_DATE_URL = "https://www.nbrb.by/api/exrates/rates?ondate=%s&periodicity=0";
-    public static final String DATE_PATTERN = "yyyy-M-d";
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    public static final String NBRB_QUERY_DATE_PATTERN = "yyyy-M-d";
+    DateTimeFormatter queryDateFormatter = DateTimeFormatter.ofPattern(NBRB_QUERY_DATE_PATTERN);
 
     @Override
     public List<Rate> getRates(LocalDate date){
@@ -38,6 +37,6 @@ public class NbrbRateClientImpl implements NbrbRateClient{
     }
 
     private String formatDate(LocalDate date) {
-        return date.format(formatter);
+        return date.format(queryDateFormatter);
     }
 }

@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 @Slf4j
 public class DateParser {
 
-    private String regex = "(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[012])-((18|19|20|21)\\d\\d)";
-    public static final String DATE_PATTERN = "d-M-yyyy";
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    private final String inputDateRegex = "(0?[1-9]|[12]\\d|3[01])-(0?[1-9]|1[012])-((19|20)\\d\\d)";
+    public static final String INPUT_DATE_PATTERN = "d-M-yyyy";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
 
     public static LocalDate parseDate(String text) {
         String date = null;
-        Pattern pattern = Pattern.compile(regex);
+        Pattern pattern = Pattern.compile(inputDateRegex);
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) date = matcher.group();
         return LocalDate.parse(date, formatter);

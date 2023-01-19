@@ -16,7 +16,7 @@ public class CurrencyServiceImpl implements CurrencyService{
     private final NbrbCurrencyClient client;
     private static final String NOT_UPDATED = "Новых единиц валют не найдено";
     private static final String UPDATED = "Добавлено %s новых записей";
-    private static final String FAILED = "Что-то пошло не так: полученный от НБРБ список отсутствует или не содержит записей";
+    private static final String FAILED = "Полученный от НБРБ список отсутствует или не содержит записей";
 
     @Override
     public String saveAll(){

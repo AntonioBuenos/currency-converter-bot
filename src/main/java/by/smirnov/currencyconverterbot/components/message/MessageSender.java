@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service.message;
+package by.smirnov.currencyconverterbot.components.message;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
