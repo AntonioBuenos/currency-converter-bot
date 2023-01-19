@@ -12,7 +12,6 @@ import java.util.List;
 public class CommandListInit {
 
     private final List<BotCommand> menuCommands;
-    private final SetMyCommands setMyCommands;
 
     {
         menuCommands = new ArrayList<>();
@@ -24,11 +23,6 @@ public class CommandListInit {
     }
 
     public CommandListInit() {
-        this.setMyCommands = getCommands();
+        new SetMyCommands(menuCommands, new BotCommandScopeDefault(), null);
     }
-
-    private SetMyCommands getCommands(){
-        return new SetMyCommands(menuCommands, new BotCommandScopeDefault(), null);
-    }
-
 }
