@@ -23,8 +23,4 @@ public class DateParser {
         if (matcher.find()) date = matcher.group();
         return LocalDate.parse(date, formatter);
     }
-
-    public static void main(String[] args) {
-        System.out.println(parseDate("31-12-2022"));
-    }
 }

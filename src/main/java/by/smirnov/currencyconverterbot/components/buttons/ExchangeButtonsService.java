@@ -1,4 +1,4 @@
-package by.smirnov.currencyconverterbot.service.buttons;
+package by.smirnov.currencyconverterbot.components.buttons;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;

@@ -20,7 +20,7 @@ import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_RATES_E
 @Slf4j
 public class NbrbRateClientImpl implements NbrbRateClient{
     public static final String NBRB_RATE_BY_DATE_URL = "https://www.nbrb.by/api/exrates/rates?ondate=%s&periodicity=0";
-    public static final String DATE_PATTERN = "yyyy-M-D";
+    public static final String DATE_PATTERN = "yyyy-M-d";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
 
     @Override

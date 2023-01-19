@@ -1,5 +1,6 @@
-package by.smirnov.currencyconverterbot.service.buttons;
+package by.smirnov.currencyconverterbot.components.buttons;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -12,7 +13,7 @@ import java.util.List;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
 import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
 
-@Service
+@Component
 public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
 
     public static final String MAIN_CURRENCIES = "main_currencies";
@@ -44,6 +45,10 @@ public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
         } else if (date == TOMORROW) {
             mainButton = getButton(MAIN_CURRENCIES_NAME, TOMORROW_MAIN_CURRENCIES);
             allButton = getButton(ALL_CURRENCIES_NAME, TOMORROW_ALL_CURRENCIES);
+        }
+        else {
+            mainButton = getButton(MAIN_CURRENCIES_NAME, MAIN_CURRENCIES);
+            allButton = getButton(ALL_CURRENCIES_NAME, ALL_CURRENCIES);
         }
 
         buttonsRow.add(mainButton);

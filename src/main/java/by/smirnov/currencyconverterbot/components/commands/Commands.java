@@ -1,12 +1,9 @@
-package by.smirnov.currencyconverterbot.service.commands;
+package by.smirnov.currencyconverterbot.components.commands;
 
 import lombok.Getter;
-import org.checkerframework.checker.nullness.Opt;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Getter
 public enum Commands {
