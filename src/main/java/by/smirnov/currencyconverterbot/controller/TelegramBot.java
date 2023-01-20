@@ -3,12 +3,12 @@ package by.smirnov.currencyconverterbot.controller;
 import by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsService;
 import by.smirnov.currencyconverterbot.components.buttons.ExchangeButtonsService;
 import by.smirnov.currencyconverterbot.components.commands.Commands;
+import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
-import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import by.smirnov.currencyconverterbot.service.rate.DailyRateService;
 import by.smirnov.currencyconverterbot.util.DateParser;
 import by.smirnov.currencyconverterbot.util.DoubleParser;
@@ -27,12 +27,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Optional;
 
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.TODAY_MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.TOMORROW_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsServiceImpl.TOMORROW_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.HELP;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.RATES_BY_DATE;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.RATES_TODAY;
@@ -41,9 +35,11 @@ import static by.smirnov.currencyconverterbot.components.commands.Commands.SET_C
 import static by.smirnov.currencyconverterbot.components.commands.Commands.SPAM;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.START;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.UPD_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_KEY;
 import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
 import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
+import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_COMMAND;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_INPUT_DATE;
 import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
@@ -51,7 +47,11 @@ import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_UNDER_
 import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
+import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
+import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_MESSAGE_ERROR;
@@ -70,7 +70,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DailyRateButtonsService dailyRateButtonsService;
     private final ExchangeButtonsService exchangeButtonsService;
     private final CurrencyService currencyService;
-    private Commands activeCommand = null;
 
     @Override
     public String getBotUsername() {
@@ -101,8 +100,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             case TODAY_ALL_CURRENCIES -> editMessage(dailyRateService.getRates(TODAY), chatId, messageId);
             case TOMORROW_MAIN_CURRENCIES -> editMessage(dailyRateService.getMainRates(TOMORROW), chatId, messageId);
             case TOMORROW_ALL_CURRENCIES -> editMessage(dailyRateService.getRates(TOMORROW), chatId, messageId);
-            case MAIN_CURRENCIES -> editMessage(dailyRateService.getMainRates(TOMORROW), chatId, messageId);
-            case ALL_CURRENCIES -> editMessage(dailyRateService.getRates(TOMORROW), chatId, messageId);
+            case MAIN_CURRENCIES ->
+                    editMessage(dailyRateService.getMainRates(DateParser.parseFormattedDate(message.getText())), chatId, messageId);
+            case ALL_CURRENCIES ->
+                    editMessage(dailyRateService.getRates(DateParser.parseFormattedDate(message.getText())), chatId, messageId);
             default -> processConversion(message, callbackData, chatId);
         }
     }
@@ -131,7 +132,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void handleCommandMessage(Message message, MessageEntity commandEntity) {
         long chatId = message.getChatId();
         String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
-        activeCommand = Commands.findByCmd(command);
 
         if (START.equals(command)) executeMessage(message, MESSAGE_START);
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
@@ -148,19 +148,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void handleTextMessage(Message message) {
         long chatId = message.getChatId();
-        if (activeCommand == SET_CURRENCY) {
-            Double value = DoubleParser.parseDouble(message.getText());
-            if(value != null){
-                MainCurrencies original = mainCurrencyRepository.getOriginalCurrency(chatId);
-                MainCurrencies target = mainCurrencyRepository.getTargetCurrency(chatId);
-                Double converted = currencyConversionService.convert(original, target, value);
-                String rateMessage = String.format(FORMAT_RATES_RESPONSE, value, original, converted, target);
-                executeMessage(message, rateMessage);
-            }
-        }
-        else if (activeCommand == RATES_BY_DATE){
-            executeMessage(dailyRateButtonsService.getButtons(chatId, DateParser.parseDate(message.getText())));
-        }
+
+        Double value = DoubleParser.parseDouble(message.getText());
+        if (value != null) {
+            MainCurrencies original = mainCurrencyRepository.getOriginalCurrency(chatId);
+            MainCurrencies target = mainCurrencyRepository.getTargetCurrency(chatId);
+            Double converted = currencyConversionService.convert(original, target, value);
+            String rateMessage = String.format(FORMAT_RATES_RESPONSE, value, original, converted, target);
+            executeMessage(message, rateMessage);
+        } else executeMessage(dailyRateButtonsService.getButtons(chatId, DateParser.parseDate(message.getText())));
+
     }
 
     private void editMessage(String text, long chatId, int messageId) {

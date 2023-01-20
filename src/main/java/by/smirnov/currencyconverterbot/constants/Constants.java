@@ -24,5 +24,5 @@ public interface Constants {
     String TOMORROW_ALL_CURRENCIES = "tomorrow_all_currencies";
     String MAIN_CURRENCIES_NAME = "Основные валюты";
     String ALL_CURRENCIES_NAME = "Все валюты";
-    String DAYLY_RATE_TYPE_MESSAGE = "Выберите курсы основных валют или курсы всех валют, устанавливаемых НБРБ:";
+    String DAYLY_RATE_TYPE_MESSAGE = "Выберите курсы основных валют или курсы всех валют, устанавливаемых НБРБ на %s:";
 }

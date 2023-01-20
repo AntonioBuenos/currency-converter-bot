@@ -28,7 +28,7 @@ public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
     public SendMessage getButtons(Long chatId, LocalDate date) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText(DAYLY_RATE_TYPE_MESSAGE);
+        message.setText(String.format(DAYLY_RATE_TYPE_MESSAGE, date));
 
         InlineKeyboardMarkup keybdMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
