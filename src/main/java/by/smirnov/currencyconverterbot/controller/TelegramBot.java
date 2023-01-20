@@ -1,8 +1,7 @@
 package by.smirnov.currencyconverterbot.controller;
 
-import by.smirnov.currencyconverterbot.components.buttons.DailyRateButtonsService;
-import by.smirnov.currencyconverterbot.components.buttons.ExchangeButtonsService;
-import by.smirnov.currencyconverterbot.components.commands.Commands;
+import by.smirnov.currencyconverterbot.components.buttons.DailyRateButtons;
+import by.smirnov.currencyconverterbot.components.buttons.ExchangeButtons;
 import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
@@ -70,8 +69,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final MessageSender messageSender;
     private final DailyRateService dailyRateService;
-    private final DailyRateButtonsService dailyRateButtonsService;
-    private final ExchangeButtonsService exchangeButtonsService;
+    private final DailyRateButtons dailyRateButtons;
+    private final ExchangeButtons exchangeButtons;
     private final CurrencyService currencyService;
 
     @Override
@@ -118,7 +117,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         MainCurrencies newCurrency = MainCurrencies.valueOf(param[1]);
         if (action.equals(ORIGINAL)) mainCurrencyRepository.setOriginalCurrency(chatId, newCurrency);
         else if (action.equals(TARGET)) mainCurrencyRepository.setTargetCurrency(chatId, newCurrency);
-        executeMessage(exchangeButtonsService.getButtons(message, chatId));
+        executeMessage(exchangeButtons.getButtons(message, chatId));
     }
 
     private void handleMessage(Message message) {
@@ -138,9 +137,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
 
         if (START.equals(command)) executeMessage(message, MESSAGE_START);
-        else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtonsService.getButtons(message));
-        else if (RATES_TODAY.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TODAY));
-        else if (RATES_TOMORROW.equals(command)) executeMessage(dailyRateButtonsService.getButtons(chatId, TOMORROW));
+        else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtons.getButtons(message));
+        else if (RATES_TODAY.equals(command)) executeMessage(dailyRateButtons.getButtons(chatId, TODAY));
+        else if (RATES_TOMORROW.equals(command)) executeMessage(dailyRateButtons.getButtons(chatId, TOMORROW));
         else if (RATES_BY_DATE.equals(command)) executeMessage(message, MESSAGE_INPUT_DATE);
         else if (UPD_CURRENCIES.equals(command) && botConfig.getOwnerId() == chatId) {
             executeMessage(message, currencyService.saveAll());
@@ -162,7 +161,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             executeMessage(message, rateMessage);
         } else {
 
-            executeMessage(dailyRateButtonsService.getButtons(chatId, DateParser.parseDate(message.getText())));
+            executeMessage(dailyRateButtons.getButtons(chatId, DateParser.parseDate(message.getText())));
         }
 
     }

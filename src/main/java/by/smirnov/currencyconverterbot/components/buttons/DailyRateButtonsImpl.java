@@ -25,7 +25,7 @@ import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_
 
 @Component
 @RequiredArgsConstructor
-public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
+public class DailyRateButtonsImpl implements DailyRateButtons {
 
     private final QueryDateRepository queryDateRepository;
 
@@ -37,32 +37,33 @@ public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
 
         InlineKeyboardMarkup keybdMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
-        List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
 
-        InlineKeyboardButton mainButton;
-        InlineKeyboardButton allButton;
-        if (date == TODAY) {
-            mainButton = getButton(MAIN_CURRENCIES_NAME, TODAY_MAIN_CURRENCIES);
-            allButton = getButton(ALL_CURRENCIES_NAME, TODAY_ALL_CURRENCIES);
-        } else if (date == TOMORROW) {
-            mainButton = getButton(MAIN_CURRENCIES_NAME, TOMORROW_MAIN_CURRENCIES);
-            allButton = getButton(ALL_CURRENCIES_NAME, TOMORROW_ALL_CURRENCIES);
-        }
-        else {
-            mainButton = getButton(MAIN_CURRENCIES_NAME, MAIN_CURRENCIES);
-            allButton = getButton(ALL_CURRENCIES_NAME, ALL_CURRENCIES);
-        }
-
-        buttonsRow.add(mainButton);
-        buttonsRow.add(allButton);
-
-        keybd.add(buttonsRow);
+        keybd.add(getButtonsRow(date));
         keybdMarkup.setKeyboard(keybd);
         message.setReplyMarkup(keybdMarkup);
 
         queryDateRepository.setDate(chatId, date);
 
         return message;
+    }
+
+    private List<InlineKeyboardButton> getButtonsRow(LocalDate date){
+        String mainCallback = MAIN_CURRENCIES;
+        String allCallback = ALL_CURRENCIES;
+        if (date == TODAY) {
+            mainCallback = TODAY_MAIN_CURRENCIES;
+            allCallback = TODAY_ALL_CURRENCIES;
+        } else if (date == TOMORROW) {
+            mainCallback = TOMORROW_MAIN_CURRENCIES;
+            allCallback = TOMORROW_ALL_CURRENCIES;
+        }
+
+        List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
+
+        buttonsRow.add(getButton(MAIN_CURRENCIES_NAME, mainCallback));
+        buttonsRow.add(getButton(ALL_CURRENCIES_NAME, allCallback));
+
+        return buttonsRow;
     }
 
     private InlineKeyboardButton getButton(String text, String callBackData) {

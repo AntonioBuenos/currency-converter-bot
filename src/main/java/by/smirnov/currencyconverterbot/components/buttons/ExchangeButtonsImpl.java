@@ -22,7 +22,7 @@ import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
 
 @Component
 @RequiredArgsConstructor
-public class ExchangeButtonsServiceImpl implements ExchangeButtonsService{
+public class ExchangeButtonsImpl implements ExchangeButtons {
 
     private final MainCurrencyRepository mainCurrencyRepository;
     private final MessageSender messageSender;
