@@ -9,10 +9,10 @@ import java.util.Objects;
 public enum Commands {
 
     START("/start", "Стартовая информация о боте"),
-    SET_CURRENCY("/set_currency", "Конвертер сумм в основных валютах"),
+    RATES_BY_DATE("/by_date_rates", "Курсы на дату"),
     RATES_TODAY("/today_rates", "Курсы на сегодня"),
     RATES_TOMORROW("/tomorrow_rates", "Курсы на завтра"),
-    RATES_BY_DATE("/by_date_rates", "Курсы на дату"),
+    SET_CURRENCY("/set_currency", "Конвертер сумм в основных валютах"),
     SPAM("/spam", "Отправить сообщения всем пользователям"),
     UPD_CURRENCIES("/upd_currencies", "Загрузить обновление перечня валют с НБРБ"),
     HELP("/help", "Общая информация о боте");
