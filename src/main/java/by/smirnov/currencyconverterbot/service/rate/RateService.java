@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RateService {
     List<Rate> getDaylyRates(LocalDate date);
-    Rate getRateByDate(Long curId, LocalDate date);
-    Rate getTodayRate(Long curId);
+    Rate getRateByDate(String abbreviation, LocalDate date);
+    Rate getTodayRate(String abbreviation);
 }

@@ -14,6 +14,6 @@ public interface RateRepository extends
 
     List<Rate> findAllByDate(LocalDate date);
 
-    Optional<Rate> findRateByCurIdAndDate(Long curId, LocalDate date);
+    Optional<Rate> findRateByAbbreviationAndDate(String abbreviation, LocalDate date);
 
 }

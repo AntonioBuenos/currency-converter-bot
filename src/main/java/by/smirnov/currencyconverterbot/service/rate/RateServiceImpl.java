@@ -22,22 +22,22 @@ public class RateServiceImpl implements RateService{
         return repository.findAllByDate(date);
     }
 
-    public Rate getRateByDate(Long curId, LocalDate date) {
-        Optional<Rate> rate = repository.findRateByCurIdAndDate(curId, date);
+    public Rate getRateByDate(String abbreviation, LocalDate date) {
+        Optional<Rate> rate = repository.findRateByAbbreviationAndDate(abbreviation, date);
         if (rate.isPresent()) return rate.get();
         else getAndSaveRates(date);
-        return repository.findRateByCurIdAndDate(curId, date).orElse(null);
+        return repository.findRateByAbbreviationAndDate(abbreviation, date).orElse(null);
     }
 
-    public Rate getTodayRate(Long curId) {
-        return getRateByDate(curId, LocalDate.now());
+    public Rate getTodayRate(String abbreviation) {
+        return getRateByDate(abbreviation, LocalDate.now());
     }
 
     private void getAndSaveRates(LocalDate date) {
         List<Rate> rates = nbrbRateClient.getRates(date);
         for (Rate rate : rates) {
             if (
-                    repository.findRateByCurIdAndDate(rate.getCurId(), rate.getDate())
+                    repository.findRateByAbbreviationAndDate(rate.getAbbreviation(), rate.getDate())
                             .isEmpty()
             ) repository.save(rate);
         }

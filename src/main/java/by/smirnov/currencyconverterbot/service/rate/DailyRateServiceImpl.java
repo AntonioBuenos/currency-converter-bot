@@ -20,7 +20,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String DATE_PATTERN = "d LLLL yyyy";
     public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
     public static final String DELIMITER = "\n";
-    private static final Long[] MAIN_CUR_IDS = {431L, 451L, 456L};
+    private static final String[] MAIN_CUR_IDS = {"USD", "EUR", "RUB", "CNY"};
 
     private final RateRepository repository;
     private final RateService rateService;
@@ -37,8 +37,8 @@ public class DailyRateServiceImpl implements DailyRateService {
     @Override
     public String getMainRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
-        for (Long id : MAIN_CUR_IDS) {
-            rates.add(rateService.getRateByDate(id, date));
+        for (String abbreviation : MAIN_CUR_IDS) {
+            rates.add(rateService.getRateByDate(abbreviation, date));
         }
         return formatRatesInfo(rates, date);
     }

@@ -27,7 +27,7 @@ public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionServ
         if (currency == MainCurrencies.BYN) {
             return 1;
         }
-        Rate todayRate = rateService.getTodayRate((long) currency.getId());
+        Rate todayRate = rateService.getTodayRate(String.valueOf(currency));
         double rate = todayRate.getOfficialRate();
         double scale = todayRate.getScale();
 
