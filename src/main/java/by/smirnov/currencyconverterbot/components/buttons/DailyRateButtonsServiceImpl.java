@@ -1,5 +1,7 @@
 package by.smirnov.currencyconverterbot.components.buttons;
 
+import by.smirnov.currencyconverterbot.repository.QueryDateRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -22,7 +24,10 @@ import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_ALL_C
 import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_CURRENCIES;
 
 @Component
+@RequiredArgsConstructor
 public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
+
+    private final QueryDateRepository queryDateRepository;
 
     @Override
     public SendMessage getButtons(Long chatId, LocalDate date) {
@@ -34,8 +39,8 @@ public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
         List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
 
-        InlineKeyboardButton mainButton = null;
-        InlineKeyboardButton allButton = null;
+        InlineKeyboardButton mainButton;
+        InlineKeyboardButton allButton;
         if (date == TODAY) {
             mainButton = getButton(MAIN_CURRENCIES_NAME, TODAY_MAIN_CURRENCIES);
             allButton = getButton(ALL_CURRENCIES_NAME, TODAY_ALL_CURRENCIES);
@@ -54,6 +59,8 @@ public class DailyRateButtonsServiceImpl implements DailyRateButtonsService {
         keybd.add(buttonsRow);
         keybdMarkup.setKeyboard(keybd);
         message.setReplyMarkup(keybdMarkup);
+
+        queryDateRepository.setDate(chatId, date);
 
         return message;
     }
