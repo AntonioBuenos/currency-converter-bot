@@ -15,7 +15,7 @@ import java.util.StringJoiner;
 @RequiredArgsConstructor
 public class DailyRateServiceImpl implements DailyRateService {
 
-    public static final String NBRB_RATES_MESSAGE = "Официальные курсы валют, установленные Национальным банком РБ на %s г.:";
+    public static final String NBRB_RATES_MESSAGE = "<strong>Официальные курсы валют, установленные Национальным банком РБ на %s г.:</strong>";
     public static final String RATE_NOT_FOUND = "курс не найден";
     public static final String DATE_PATTERN = "d MMMM yyyy";
     public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
