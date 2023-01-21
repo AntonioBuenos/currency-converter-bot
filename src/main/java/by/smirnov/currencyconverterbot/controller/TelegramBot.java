@@ -97,16 +97,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         String callbackData = callbackQuery.getData();
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
-        LocalDate date;
         switch (callbackData) {
-            case TODAY_MAIN_CURRENCIES, TOMORROW_MAIN_CURRENCIES, MAIN_CURRENCIES -> {
-                date = queryDateRepository.getDate(chatId);
-                editMessage(dailyRateService.getMainRates(date), chatId, messageId);
-            }
-            case TODAY_ALL_CURRENCIES, TOMORROW_ALL_CURRENCIES, ALL_CURRENCIES -> {
-                date = queryDateRepository.getDate(chatId);
-                editMessage(dailyRateService.getRates(date), chatId, messageId);
-            }
+            case TODAY_MAIN_CURRENCIES, TOMORROW_MAIN_CURRENCIES, MAIN_CURRENCIES ->
+                editMessage(dailyRateService.getMainRates(getDate(chatId)), chatId, messageId);
+            case TODAY_ALL_CURRENCIES, TOMORROW_ALL_CURRENCIES, ALL_CURRENCIES ->
+                editMessage(dailyRateService.getRates(getDate(chatId)), chatId, messageId);
             default -> processConversion(message, callbackData, chatId);
         }
     }
@@ -137,14 +132,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
 
         if (START.equals(command)) executeMessage(message, MESSAGE_START);
+        else if (HELP.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtons.getButtons(message));
+        else if (RATES_BY_DATE.equals(command)) executeMessage(message, MESSAGE_INPUT_DATE);
         else if (RATES_TODAY.equals(command)) executeMessage(dailyRateButtons.getButtons(chatId, TODAY));
         else if (RATES_TOMORROW.equals(command)) executeMessage(dailyRateButtons.getButtons(chatId, TOMORROW));
-        else if (RATES_BY_DATE.equals(command)) executeMessage(message, MESSAGE_INPUT_DATE);
         else if (UPD_CURRENCIES.equals(command) && botConfig.getOwnerId() == chatId) {
             executeMessage(message, currencyService.saveAll());
-        } else if (HELP.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
-        else if (SPAM.equals(command) && botConfig.getOwnerId() == chatId) {
+        } else if (SPAM.equals(command) && botConfig.getOwnerId() == chatId) {
             executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
         } else executeMessage(message, MESSAGE_BAD_COMMAND);
     }
@@ -160,10 +155,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             String rateMessage = String.format(FORMAT_RATES_RESPONSE, value, original, converted, target);
             executeMessage(message, rateMessage);
         } else {
-
             executeMessage(dailyRateButtons.getButtons(chatId, DateParser.parseDate(message.getText())));
         }
-
     }
 
     private void editMessage(String text, long chatId, int messageId) {
@@ -176,6 +169,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             log.error(EDIT_MESSAGE_ERROR, e.getMessage());
         }
+    }
+
+    private LocalDate getDate(Long chatId){
+        return queryDateRepository.getDate(chatId);
     }
 
     private void executeMessage(SendMessage message) {
