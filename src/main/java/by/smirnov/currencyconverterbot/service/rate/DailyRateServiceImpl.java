@@ -1,7 +1,6 @@
 package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
-import by.smirnov.currencyconverterbot.repository.RateRepository;
 import by.smirnov.currencyconverterbot.util.DateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,14 +36,11 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String CNY = "CNY";
     public static final String DELIMITER = "\n";
     private static final String[] MAIN_CURRENCIES = {USD, EUR, RUB, CNY};
-
-    private final RateRepository repository;
     private final RateService rateService;
 
     @Override
     public String getRates(LocalDate date) {
-        List<Rate> rates = repository.findAllByDate(date);
-        if (rates.isEmpty()) rates = rateService.getDaylyRates(date);
+        List<Rate> rates = rateService.getDaylyRates(date);
         if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesInfo(rates, date);
     }

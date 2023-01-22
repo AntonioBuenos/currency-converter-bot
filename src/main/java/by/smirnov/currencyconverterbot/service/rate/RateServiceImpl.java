@@ -19,13 +19,15 @@ public class RateServiceImpl implements RateService{
 
     @Override
     public List<Rate> getDaylyRates(LocalDate date) {
-        return repository.findAllByDate(date);
+        List<Rate> rates = repository.findAllByDate(date);
+        if (rates.isEmpty()) rates = saveAndGetRates(date);
+        return rates;
     }
 
     public Rate getRateByDate(String abbreviation, LocalDate date) {
         Optional<Rate> rate = repository.findRateByAbbreviationAndDate(abbreviation, date);
         if (rate.isPresent()) return rate.get();
-        else getAndSaveRates(date);
+        else checkAndSaveRates(date);
         return repository.findRateByAbbreviationAndDate(abbreviation, date).orElse(null);
     }
 
@@ -33,7 +35,7 @@ public class RateServiceImpl implements RateService{
         return getRateByDate(abbreviation, LocalDate.now());
     }
 
-    private void getAndSaveRates(LocalDate date) {
+    private void checkAndSaveRates(LocalDate date) {
         List<Rate> rates = nbrbRateClient.getRates(date);
         for (Rate rate : rates) {
             if (
@@ -41,5 +43,10 @@ public class RateServiceImpl implements RateService{
                             .isEmpty()
             ) repository.save(rate);
         }
+    }
+
+    private List<Rate> saveAndGetRates(LocalDate date) {
+        List<Rate> rates = nbrbRateClient.getRates(date);
+        return repository.saveAll(rates);
     }
 }
