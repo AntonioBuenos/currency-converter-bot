@@ -2,11 +2,11 @@ package by.smirnov.currencyconverterbot.service.rate;
 
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
+import by.smirnov.currencyconverterbot.util.DateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -18,10 +18,11 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String NBRB_RATES_MESSAGE =
             "<strong>Официальные курсы валют, установленные Национальным банком РБ на %s г.:</strong>";
     public static final String RATE_NOT_FOUND = "курс не найден";
-    public static final String DATE_PATTERN = "d MMMM yyyy";
     public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
     public static final String DYNAMIC_RATE_LINE_FORMAT = "%s = %.4f BYN %s%s";
     public static final String DYNAMICS_FORMAT = " %s %.2f %%";
+    public static final String SCALE_FORMAT = " (за %d %s)";
+    public static final String EMPTY = "";
     public static final String RENMINBI = "Ұ";
     public static final String DOLLAR = "$";
     public static final String EURO = "€";
@@ -53,12 +54,12 @@ public class DailyRateServiceImpl implements DailyRateService {
         for (String abbreviation : MAIN_CURRENCIES) {
             rates.add(rateService.getRateByDate(abbreviation, date));
         }
-        return formatMainRatesDynamicInfo(rates, date);//вернуть formatRatesInfo и сделать отдельный метод
+        return formatMainRatesDynamicInfo(rates, date);
     }
 
     private String formatRatesInfo(List<Rate> rates, LocalDate date) {
         StringJoiner joiner = new StringJoiner(DELIMITER);
-        String header = String.format(NBRB_RATES_MESSAGE, formatDate(date));
+        String header = String.format(NBRB_RATES_MESSAGE, DateFormatter.formatDate(date));
         joiner.add(header);
         for (Rate rate : rates) {
             String rateInfo;
@@ -71,7 +72,7 @@ public class DailyRateServiceImpl implements DailyRateService {
 
     private String formatMainRatesDynamicInfo(List<Rate> rates, LocalDate date) {
         StringJoiner joiner = new StringJoiner(DELIMITER);
-        String header = String.format(NBRB_RATES_MESSAGE, formatDate(date));
+        String header = String.format(NBRB_RATES_MESSAGE, DateFormatter.formatDate(date));
         joiner.add(header);
         for (Rate rate : rates) {
             String rateInfo;
@@ -90,7 +91,7 @@ public class DailyRateServiceImpl implements DailyRateService {
 
     private String getRateSymbol(Rate rate) {
         String abbr = rate.getAbbreviation();
-        String symbol = null;
+        String symbol;
         switch (abbr) {
             case USD -> symbol = DOLLAR;
             case EUR -> symbol = EURO;
@@ -103,8 +104,8 @@ public class DailyRateServiceImpl implements DailyRateService {
 
     private String showScale(Rate rate) {
         Long scale = rate.getScale();
-        if (scale == 1) return "";
-        return String.format(" (за %d %s)", scale, getRateSymbol(rate));
+        if (scale == 1) return EMPTY;
+        return String.format(SCALE_FORMAT, scale, getRateSymbol(rate));
     }
 
     private String getDynamics(Rate rate) {
@@ -113,15 +114,10 @@ public class DailyRateServiceImpl implements DailyRateService {
         if (dayBeforeRate < thisRate) return String.format(DYNAMICS_FORMAT, UP, getPercentage(thisRate, dayBeforeRate));
         else if (dayBeforeRate > thisRate)
             return String.format(DYNAMICS_FORMAT, DOWN, getPercentage(thisRate, dayBeforeRate));
-        else return "";
+        else return EMPTY;
     }
 
     private double getPercentage(double main, double comparable) {
         return (comparable * 100 / main) - 100;
-    }
-
-    private String formatDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-        return date.format(formatter);
     }
 }
