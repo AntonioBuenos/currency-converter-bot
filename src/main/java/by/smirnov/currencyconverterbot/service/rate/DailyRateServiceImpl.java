@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Service
@@ -17,6 +18,7 @@ public class DailyRateServiceImpl implements DailyRateService {
 
     public static final String NBRB_RATES_MESSAGE =
             "<strong>Официальные курсы валют, установленные Национальным банком РБ на %s г.:</strong>";
+    public static final String NO_RATES_MESSAGE = "<b><i>Информация о курсах на %s г. отсутствует</i></b>";
     public static final String RATE_NOT_FOUND = "курс не найден";
     public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
     public static final String DYNAMIC_RATE_LINE_FORMAT = "%s = %.4f BYN %s%s";
@@ -42,18 +44,21 @@ public class DailyRateServiceImpl implements DailyRateService {
     @Override
     public String getRates(LocalDate date) {
         List<Rate> rates = repository.findAllByDate(date);
-        if (rates.isEmpty()) {
-            rates = rateService.getDaylyRates(date);
-        }
+        if (rates.isEmpty()) rates = rateService.getDaylyRates(date);
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesInfo(rates, date);
     }
 
     @Override
     public String getMainRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
+        boolean isRateListEmpty = true;
         for (String abbreviation : MAIN_CURRENCIES) {
-            rates.add(rateService.getRateByDate(abbreviation, date));
+            Rate rate = rateService.getRateByDate(abbreviation, date);
+            rates.add(rate);
+            if(Objects.nonNull(rate)) isRateListEmpty = false;
         }
+        if (isRateListEmpty) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatMainRatesDynamicInfo(rates, date);
     }
 
