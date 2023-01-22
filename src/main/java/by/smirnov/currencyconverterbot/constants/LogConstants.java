@@ -12,4 +12,5 @@ public interface LogConstants {
     String CONVERSION_NULL_ERROR = "Error of conversion method (some data is null): {}";
     String GET_RATES_ERROR = "Error occurred while connection and getting rates from NBRB url: {}";
     String GET_CURRENCIES_ERROR = "Error occurred while connection and getting currencies from NBRB url: {}";
+    String LOG_NEW_USER = "New user {} registered";
 }
