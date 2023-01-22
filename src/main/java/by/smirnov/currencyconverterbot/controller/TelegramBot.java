@@ -38,27 +38,28 @@ import static by.smirnov.currencyconverterbot.components.commands.Commands.SET_C
 import static by.smirnov.currencyconverterbot.components.commands.Commands.SPAM;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.START;
 import static by.smirnov.currencyconverterbot.components.commands.Commands.UPD_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.COMMAND_KEY;
-import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
-import static by.smirnov.currencyconverterbot.constants.Constants.FORMAT_RATES_RESPONSE;
-import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_BAD_COMMAND;
-import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_INPUT_DATE;
-import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_START;
-import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_UNDER_CONSTRUCTION;
-import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
-import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.COMMAND_KEY;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.DELIM;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.FORMAT_RATES_RESPONSE;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ORIGINAL;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TARGET;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_EDIT_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_MESSAGE_ERROR;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.EXECUTE_SEND_MESSAGE_ERROR;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_BAD_COMMAND;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_INPUT_DATE;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_SPAM;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_START;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_UNDER_CONSTRUCTION;
 
 @Component
 @Slf4j
@@ -146,7 +147,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         else if (UPD_CURRENCIES.equals(command) && botConfig.getOwnerId() == chatId) {
             executeMessage(message, currencyService.saveAll());
         } else if (SPAM.equals(command) && botConfig.getOwnerId() == chatId) {
-            executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
+            executeMessage(message, MESSAGE_SPAM);
         } else executeMessage(message, MESSAGE_BAD_COMMAND);
     }
 

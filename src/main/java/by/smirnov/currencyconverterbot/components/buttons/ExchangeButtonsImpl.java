@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static by.smirnov.currencyconverterbot.constants.Constants.DELIM;
-import static by.smirnov.currencyconverterbot.constants.Constants.MESSAGE_CHOOSE_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.ORIGINAL;
-import static by.smirnov.currencyconverterbot.constants.Constants.TARGET;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.DELIM;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MESSAGE_CHOOSE_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ORIGINAL;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TARGET;
 
 @Component
 @RequiredArgsConstructor

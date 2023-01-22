@@ -11,17 +11,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.ALL_CURRENCIES_NAME;
-import static by.smirnov.currencyconverterbot.constants.Constants.DAYLY_RATE_TYPE_MESSAGE;
-import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.MAIN_CURRENCIES_NAME;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TODAY_MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.Constants.TOMORROW_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.DAYLY_RATE_TYPE_MESSAGE;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_MAIN_CURRENCIES;
 
 @Component
 @RequiredArgsConstructor
