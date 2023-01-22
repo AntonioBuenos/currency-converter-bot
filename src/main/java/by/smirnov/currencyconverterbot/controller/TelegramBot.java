@@ -10,6 +10,7 @@ import by.smirnov.currencyconverterbot.repository.QueryDateRepository;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
 import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
 import by.smirnov.currencyconverterbot.service.rate.DailyRateService;
+import by.smirnov.currencyconverterbot.service.user.UserService;
 import by.smirnov.currencyconverterbot.util.DateParser;
 import by.smirnov.currencyconverterbot.util.DoubleParser;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DailyRateButtons dailyRateButtons;
     private final ExchangeButtons exchangeButtons;
     private final CurrencyService currencyService;
+    private final UserService userService;
 
     @Override
     public String getBotUsername() {
@@ -132,7 +134,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         long chatId = message.getChatId();
         String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
 
-        if (START.equals(command)) executeMessage(message, MESSAGE_START);
+        if (START.equals(command)) {
+            userService.registerUser(message);
+            executeMessage(message, MESSAGE_START);
+        }
         else if (HELP.equals(command)) executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
         else if (SET_CURRENCY.equals(command)) executeMessage(exchangeButtons.getButtons(message));
         else if (RATES_BY_DATE.equals(command)) executeMessage(message, MESSAGE_INPUT_DATE);
