@@ -114,11 +114,11 @@ public class DailyRateServiceImpl implements DailyRateService {
         double thisRate = rate.getOfficialRate();
         if (dayBeforeRate < thisRate) return String.format(DYNAMICS_FORMAT, UP, getPercentage(thisRate, dayBeforeRate));
         else if (dayBeforeRate > thisRate)
-            return String.format(DYNAMICS_FORMAT, DOWN, getPercentage(thisRate, dayBeforeRate));
+            return String.format(DYNAMICS_FORMAT, DOWN, getPercentage(thisRate, dayBeforeRate)* (-1));
         else return EMPTY;
     }
 
-    private double getPercentage(double main, double comparable) {
-        return (comparable * 100 / main) - 100;
+    private double getPercentage(double thisRate, double dayBeforeRate) {
+        return (thisRate * 100 / dayBeforeRate) - 100;
     }
 }
