@@ -35,14 +35,14 @@ public class CommandHandler {
 
     public void handleCommandMessage(Message message, MessageEntity commandEntity) {
         long chatId = message.getChatId();
-        String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
-        Commands cmd = Commands.findByCmd(command);
-        if (cmd == null) {
+        String textCommand = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
+        Commands command = Commands.findByCmd(textCommand);
+        if (command == null) {
             executor.executeMessage(message, MESSAGE_BAD_COMMAND);
             return;
-        } else commandRepository.setActualCommand(chatId, cmd);
+        } else commandRepository.setActualCommand(chatId, command);
 
-        switch (cmd) {
+        switch (command) {
             case START -> {
                 userService.registerUser(message);
                 executor.executeMessage(message, MESSAGE_START);
