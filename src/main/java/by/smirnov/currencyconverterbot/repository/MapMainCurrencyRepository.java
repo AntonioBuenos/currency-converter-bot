@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class MapMainCurrencyRepositoryImpl implements MainCurrencyRepository {
+public class MapMainCurrencyRepository implements MainCurrencyRepository {
     private final Map<Long, MainCurrencies> originalCurrency = new HashMap<>();
     private final Map<Long, MainCurrencies> targetCurrency = new HashMap<>();
 

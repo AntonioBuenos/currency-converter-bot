@@ -14,7 +14,7 @@ public class MapQueryDateRepository implements QueryDateRepository{
 
     @Override
     public LocalDate getDate(Long chatId){
-        return dates.getOrDefault(chatId, null);
+        return dates.get(chatId);
     }
 
     @Override
