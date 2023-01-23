@@ -2,8 +2,10 @@ package by.smirnov.currencyconverterbot.controller.handlers;
 
 import by.smirnov.currencyconverterbot.components.buttons.DailyRateButtons;
 import by.smirnov.currencyconverterbot.components.buttons.ExchangeButtons;
+import by.smirnov.currencyconverterbot.components.commands.Commands;
 import by.smirnov.currencyconverterbot.config.BotConfig;
 import by.smirnov.currencyconverterbot.controller.BotExecutor;
+import by.smirnov.currencyconverterbot.repository.ActualCommandRepository;
 import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
 import by.smirnov.currencyconverterbot.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +13,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
-import static by.smirnov.currencyconverterbot.components.commands.Commands.HELP;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.RATES_BY_DATE;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.RATES_TODAY;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.RATES_TOMORROW;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.SET_CURRENCY;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.SPAM;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.START;
-import static by.smirnov.currencyconverterbot.components.commands.Commands.UPD_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
 import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_BAD_COMMAND;
@@ -37,24 +31,31 @@ public class CommandHandler {
     private final DailyRateButtons dailyRateButtons;
     private final CurrencyService currencyService;
     private final BotConfig botConfig;
+    private final ActualCommandRepository commandRepository;
 
     public void handleCommandMessage(Message message, MessageEntity commandEntity) {
         long chatId = message.getChatId();
         String command = message.getText().substring(commandEntity.getOffset(), commandEntity.getLength());
+        Commands cmd = Commands.findByCmd(command);
+        if (cmd == null) {
+            executor.executeMessage(message, MESSAGE_BAD_COMMAND);
+            return;
+        } else commandRepository.setActualCommand(chatId, cmd);
 
-        if (START.equals(command)) {
-            userService.registerUser(message);
-            executor.executeMessage(message, MESSAGE_START);
+        switch (cmd) {
+            case START -> {
+                userService.registerUser(message);
+                executor.executeMessage(message, MESSAGE_START);
+            }
+            case HELP -> executor.executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
+            case SET_CURRENCY -> executor.executeMessage(exchangeButtons.getButtons(message));
+            case RATES_BY_DATE -> executor.executeMessage(message, MESSAGE_INPUT_DATE);
+            case RATES_TODAY -> executor.executeMessage(dailyRateButtons.getButtons(chatId, TODAY));
+            case RATES_TOMORROW -> executor.executeMessage(dailyRateButtons.getButtons(chatId, TOMORROW));
+            case UPD_CURRENCIES -> {
+                if (botConfig.getOwnerId() == chatId) executor.executeMessage(message, currencyService.saveAll());
+            }
+            case SPAM -> { if (botConfig.getOwnerId() == chatId) executor.executeMessage(message, MESSAGE_SPAM); }
         }
-        else if (HELP.equals(command)) executor.executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
-        else if (SET_CURRENCY.equals(command)) executor.executeMessage(exchangeButtons.getButtons(message));
-        else if (RATES_BY_DATE.equals(command)) executor.executeMessage(message, MESSAGE_INPUT_DATE);
-        else if (RATES_TODAY.equals(command)) executor.executeMessage(dailyRateButtons.getButtons(chatId, TODAY));
-        else if (RATES_TOMORROW.equals(command)) executor.executeMessage(dailyRateButtons.getButtons(chatId, TOMORROW));
-        else if (UPD_CURRENCIES.equals(command) && botConfig.getOwnerId() == chatId) {
-            executor.executeMessage(message, currencyService.saveAll());
-        } else if (SPAM.equals(command) && botConfig.getOwnerId() == chatId) {
-            executor.executeMessage(message, MESSAGE_SPAM);
-        } else executor.executeMessage(message, MESSAGE_BAD_COMMAND);
     }
 }
