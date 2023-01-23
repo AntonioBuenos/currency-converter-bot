@@ -1,8 +1,8 @@
 package by.smirnov.currencyconverterbot.components.buttons;
 
+import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
-import by.smirnov.currencyconverterbot.components.message.MessageSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.DELIM;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.MESSAGE_CHOOSE_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TARGET;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.MESSAGE_CHOOSE_CURRENCIES;
 
 @Component
 @RequiredArgsConstructor

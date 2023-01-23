@@ -13,7 +13,6 @@ import java.util.List;
 
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.DAYLY_RATE_TYPE_MESSAGE;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
@@ -22,6 +21,7 @@ import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_MA
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAYLY_RATE_TYPE_MESSAGE;
 
 @Component
 @RequiredArgsConstructor
