@@ -21,7 +21,7 @@ import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_MA
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_ALL_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAYLY_RATE_TYPE_MESSAGE;
+import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAILY_RATE_TYPE_MESSAGE;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class RateButtonsImpl implements RateButtons {
     public SendMessage getButtons(Long chatId, LocalDate date) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText(String.format(DAYLY_RATE_TYPE_MESSAGE, date));
+        message.setText(String.format(DAILY_RATE_TYPE_MESSAGE, date));
 
         InlineKeyboardMarkup keybdMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
