@@ -4,7 +4,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.time.LocalDate;
 
-public interface DailyRateButtons {
+public interface RateButtons {
 
     SendMessage getButtons(Long chatId, LocalDate date);
 }

@@ -25,7 +25,7 @@ import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAYLY_R
 
 @Component
 @RequiredArgsConstructor
-public class DailyRateButtonsImpl implements DailyRateButtons {
+public class RateButtonsImpl implements RateButtons {
 
     private final QueryDateRepository queryDateRepository;
 

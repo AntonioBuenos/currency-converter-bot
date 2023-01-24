@@ -1,6 +1,6 @@
 package by.smirnov.currencyconverterbot.controller.handlers;
 
-import by.smirnov.currencyconverterbot.components.buttons.DailyRateButtons;
+import by.smirnov.currencyconverterbot.components.buttons.RateButtons;
 import by.smirnov.currencyconverterbot.components.buttons.ExchangeButtons;
 import by.smirnov.currencyconverterbot.components.commands.Commands;
 import by.smirnov.currencyconverterbot.config.BotConfig;
@@ -28,7 +28,7 @@ public class CommandHandler {
     private final BotExecutor executor;
     private final UserService userService;
     private final ExchangeButtons exchangeButtons;
-    private final DailyRateButtons dailyRateButtons;
+    private final RateButtons rateButtons;
     private final CurrencyService currencyService;
     private final BotConfig botConfig;
     private final ActualCommandRepository commandRepository;
@@ -50,8 +50,8 @@ public class CommandHandler {
             case HELP -> executor.executeMessage(message, MESSAGE_UNDER_CONSTRUCTION);
             case SET_CURRENCY -> executor.executeMessage(exchangeButtons.getButtons(message));
             case RATES_BY_DATE -> executor.executeMessage(message, MESSAGE_INPUT_DATE);
-            case RATES_TODAY -> executor.executeMessage(dailyRateButtons.getButtons(chatId, TODAY));
-            case RATES_TOMORROW -> executor.executeMessage(dailyRateButtons.getButtons(chatId, TOMORROW));
+            case RATES_TODAY -> executor.executeMessage(rateButtons.getButtons(chatId, TODAY));
+            case RATES_TOMORROW -> executor.executeMessage(rateButtons.getButtons(chatId, TOMORROW));
             case UPD_CURRENCIES -> {
                 if (botConfig.getOwnerId() == chatId) executor.executeMessage(message, currencyService.saveAll());
             }
