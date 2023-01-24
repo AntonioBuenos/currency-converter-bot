@@ -6,9 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MainCurrencies {
-    USD(431), EUR(451),RUB(456), BYN(0);
+    USD("$"), EUR("€"), RUB("₽"), CNY("Ұ"), BYN("Br");
 
-    private final int id;
-
-
+    private final String symbol;
 }

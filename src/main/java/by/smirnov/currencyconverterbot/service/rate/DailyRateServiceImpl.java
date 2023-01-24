@@ -1,5 +1,6 @@
 package by.smirnov.currencyconverterbot.service.rate;
 
+import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.util.DateFormatter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+
+import static by.smirnov.currencyconverterbot.entity.MainCurrencies.BYN;
 
 @Service
 @RequiredArgsConstructor
@@ -24,18 +27,9 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String DYNAMICS_FORMAT = " %s %.2f %%";
     public static final String SCALE_FORMAT = " (за %d %s)";
     public static final String EMPTY = "";
-    public static final String RENMINBI = "Ұ";
-    public static final String DOLLAR = "$";
-    public static final String EURO = "€";
-    public static final String RUS_RUBLE = "₽";
     public static final String UP = "↑";
     public static final String DOWN = "↓";
-    public static final String USD = "USD";
-    public static final String EUR = "EUR";
-    public static final String RUB = "RUB";
-    public static final String CNY = "CNY";
     public static final String DELIMITER = "\n";
-    private static final String[] MAIN_CURRENCIES = {USD, EUR, RUB, CNY};
     private final RateService rateService;
 
     @Override
@@ -49,8 +43,10 @@ public class DailyRateServiceImpl implements DailyRateService {
     public String getMainRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
         boolean isRateListEmpty = true;
-        for (String abbreviation : MAIN_CURRENCIES) {
-            Rate rate = rateService.getRateByDate(abbreviation, date);
+
+        for (MainCurrencies abbreviation : MainCurrencies.values()) {
+            if(abbreviation == BYN) continue;
+            Rate rate = rateService.getRateByDate(String.valueOf(abbreviation), date);
             rates.add(rate);
             if(Objects.nonNull(rate)) isRateListEmpty = false;
         }
@@ -92,15 +88,13 @@ public class DailyRateServiceImpl implements DailyRateService {
 
     private String getRateSymbol(Rate rate) {
         String abbr = rate.getAbbreviation();
-        String symbol;
-        switch (abbr) {
-            case USD -> symbol = DOLLAR;
-            case EUR -> symbol = EURO;
-            case RUB -> symbol = RUS_RUBLE;
-            case CNY -> symbol = RENMINBI;
-            default -> symbol = abbr;
+        MainCurrencies currency;
+        try {
+            currency = MainCurrencies.valueOf(abbr);
+        }catch (IllegalArgumentException e){
+            return abbr;
         }
-        return symbol;
+        return currency.getSymbol();
     }
 
     private String showScale(Rate rate) {

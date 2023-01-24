@@ -6,6 +6,8 @@ import by.smirnov.currencyconverterbot.service.rate.RateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static by.smirnov.currencyconverterbot.entity.MainCurrencies.BYN;
+
 @Service
 @RequiredArgsConstructor
 public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionService{
@@ -24,7 +26,7 @@ public class NbrbCurrencyConversionServiceImpl implements CurrencyConversionServ
     }
 
     private double getRate(MainCurrencies currency) {
-        if (currency == MainCurrencies.BYN) {
+        if (currency == BYN) {
             return 1;
         }
         Rate todayRate = rateService.getTodayRate(String.valueOf(currency));
