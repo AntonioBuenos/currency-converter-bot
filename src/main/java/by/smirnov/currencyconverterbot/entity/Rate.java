@@ -1,10 +1,7 @@
 package by.smirnov.currencyconverterbot.entity;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-@ToString
+@Data
 @Entity
 @Table(name = "rate")
 public class Rate {

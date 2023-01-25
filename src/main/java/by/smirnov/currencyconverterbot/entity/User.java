@@ -3,6 +3,7 @@ package by.smirnov.currencyconverterbot.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Data
+@EqualsAndHashCode(exclude = {"registeredAt"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
