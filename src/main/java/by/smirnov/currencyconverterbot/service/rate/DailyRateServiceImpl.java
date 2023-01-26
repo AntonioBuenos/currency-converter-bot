@@ -22,7 +22,7 @@ public class DailyRateServiceImpl implements DailyRateService {
             "<strong>Официальные курсы валют, установленные Национальным банком РБ на %s г.:</strong>";
     public static final String NO_RATES_MESSAGE = "<b><i>Информация о курсах на %s г. отсутствует</i></b>";
     public static final String RATE_NOT_FOUND = "курс не найден";
-    public static final String RATE_LINE_FORMAT = "%s (%d) = %.4f BYN";
+    public static final String RATE_LINE_FORMAT = "%s = %.4f BYN %s";
     public static final String DYNAMIC_RATE_LINE_FORMAT = "%s = %.4f BYN %s%s";
     public static final String DYNAMICS_FORMAT = " %s %.2f %%";
     public static final String SCALE_FORMAT = " (за %d %s)";
@@ -61,7 +61,7 @@ public class DailyRateServiceImpl implements DailyRateService {
         for (Rate rate : rates) {
             String rateInfo;
             if (rate == null) rateInfo = RATE_NOT_FOUND;
-            else rateInfo = String.format(RATE_LINE_FORMAT, rate.getName(), rate.getScale(), rate.getOfficialRate());
+            else rateInfo = String.format(RATE_LINE_FORMAT, rate.getName(), rate.getOfficialRate(), showScale(rate));
             joiner.add(rateInfo);
         }
         return joiner.toString();
