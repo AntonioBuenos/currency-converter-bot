@@ -1,7 +1,9 @@
 package by.smirnov.currencyconverterbot.service.rate;
 
+import by.smirnov.currencyconverterbot.entity.Currency;
 import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.entity.Rate;
+import by.smirnov.currencyconverterbot.service.currency.CurrencyService;
 import by.smirnov.currencyconverterbot.util.DateFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String DOWN = "↓";
     public static final String DELIMITER = "\n";
     private final RateService rateService;
+    private final CurrencyService currencyService;
 
     @Override
     public String getRates(LocalDate date) {
@@ -61,7 +64,10 @@ public class DailyRateServiceImpl implements DailyRateService {
         for (Rate rate : rates) {
             String rateInfo;
             if (rate == null) rateInfo = RATE_NOT_FOUND;
-            else rateInfo = String.format(RATE_LINE_FORMAT, rate.getName(), rate.getOfficialRate(), showScale(rate));
+            else {
+                Currency currency = currencyService.getActualCurrency(rate.getAbbreviation(), date);
+                rateInfo = String.format(RATE_LINE_FORMAT, currency.getName(), rate.getOfficialRate(), showScale(rate));
+            }
             joiner.add(rateInfo);
         }
         return joiner.toString();

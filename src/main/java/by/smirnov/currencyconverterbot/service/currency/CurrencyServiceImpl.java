@@ -6,7 +6,12 @@ import by.smirnov.currencyconverterbot.repository.CurrenciesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,13 @@ public class CurrencyServiceImpl implements CurrencyService{
         }
         if(countNew > 0) return String.format(UPDATED, countNew);
         return NOT_UPDATED;
+    }
+
+    @Override
+    public Currency getActualCurrency(String abbreviation, LocalDate date){
+        return repository
+                .getActualCurrency(abbreviation, Timestamp.valueOf(LocalDateTime.of(date, LocalTime.MIN)))
+                .orElse(null);
     }
 
 }
