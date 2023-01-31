@@ -11,7 +11,11 @@ public interface CommonConstants {
     LocalDate TODAY = LocalDate.now();
     LocalDate TOMORROW = TODAY.plusDays(1);
     String MAIN_CURRENCIES = "main_currencies";
+    String MAIN_CURRENCIES_DYNAMIC = "main_currencies_dyn";
     String ALL_CURRENCIES = "all_currencies";
+    String ALL_CURRENCIES_DYNAMIC = "all_currencies_dyn";
     String MAIN_CURRENCIES_NAME = "Основные валюты";
+    String MAIN_CURRENCIES_NAME_DYNAMIC = "Основные (с динамикой)";
     String ALL_CURRENCIES_NAME = "Все валюты";
+    String ALL_CURRENCIES_NAME_DYNAMIC = "Все (с динамикой)";
 }

@@ -12,9 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAILY_RATE_TYPE_MESSAGE;
 
 @Component
@@ -32,7 +35,8 @@ public class RateButtonsImpl implements RateButtons {
         InlineKeyboardMarkup keybdMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keybd = new ArrayList<>();
 
-        keybd.add(getButtonsRow());
+        keybd.add(getCommonButtonsRow());
+        keybd.add((getDynamicButtonsRow()));
         keybdMarkup.setKeyboard(keybd);
         message.setReplyMarkup(keybdMarkup);
 
@@ -41,11 +45,20 @@ public class RateButtonsImpl implements RateButtons {
         return message;
     }
 
-    private List<InlineKeyboardButton> getButtonsRow(){
+    private List<InlineKeyboardButton> getCommonButtonsRow(){
         List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
 
         buttonsRow.add(getButton(MAIN_CURRENCIES_NAME, MAIN_CURRENCIES));
         buttonsRow.add(getButton(ALL_CURRENCIES_NAME, ALL_CURRENCIES));
+
+        return buttonsRow;
+    }
+
+    private List<InlineKeyboardButton> getDynamicButtonsRow(){
+        List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
+
+        buttonsRow.add(getButton(MAIN_CURRENCIES_NAME_DYNAMIC, MAIN_CURRENCIES_NAME));
+        buttonsRow.add(getButton(ALL_CURRENCIES_NAME_DYNAMIC, ALL_CURRENCIES_DYNAMIC));
 
         return buttonsRow;
     }
