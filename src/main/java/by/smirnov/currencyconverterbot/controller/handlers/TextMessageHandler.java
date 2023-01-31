@@ -7,6 +7,7 @@ import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import by.smirnov.currencyconverterbot.repository.ActualCommandRepository;
 import by.smirnov.currencyconverterbot.repository.MainCurrencyRepository;
 import by.smirnov.currencyconverterbot.service.conversion.CurrencyConversionService;
+import by.smirnov.currencyconverterbot.service.spam.SpamService;
 import by.smirnov.currencyconverterbot.util.DateParser;
 import by.smirnov.currencyconverterbot.util.DoubleParser;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class TextMessageHandler {
     private final CurrencyConversionService currencyConversionService;
     private final RateButtons rateButtons;
     private final ActualCommandRepository commandRepository;
+    private final SpamService spamService;
 
     public void handleTextMessage(Message message) {
         long chatId = message.getChatId();
@@ -38,6 +40,7 @@ public class TextMessageHandler {
 
         switch (command) {
             case SET_CURRENCY -> handleConvertable(chatId, message);
+            case SPAM -> spamService.spam(message.getText());
             case RATES_BY_DATE ->
                     executor.executeMessage(rateButtons.getButtons(chatId, DateParser.parseDate(message.getText())));
             default -> executor.executeMessage(message, defautReply);
