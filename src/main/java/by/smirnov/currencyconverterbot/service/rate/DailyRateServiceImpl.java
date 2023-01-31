@@ -29,6 +29,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     public static final String DYNAMICS_FORMAT = " %s %.2f %%";
     public static final String SCALE_FORMAT = " (за %d %s)";
     public static final String EMPTY = "";
+    public static final String NO_DYNAMIC = "без динамики";
     public static final String UP = "↑";
     public static final String DOWN = "↓";
     public static final String DELIMITER = "\n";
@@ -115,7 +116,7 @@ public class DailyRateServiceImpl implements DailyRateService {
         if (dayBeforeRate < thisRate) return String.format(DYNAMICS_FORMAT, UP, getPercentage(thisRate, dayBeforeRate));
         else if (dayBeforeRate > thisRate)
             return String.format(DYNAMICS_FORMAT, DOWN, getPercentage(thisRate, dayBeforeRate)* (-1));
-        else return EMPTY;
+        else return NO_DYNAMIC;
     }
 
     private double getPercentage(double thisRate, double dayBeforeRate) {
