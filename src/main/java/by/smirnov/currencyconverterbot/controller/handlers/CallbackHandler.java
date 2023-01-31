@@ -18,10 +18,6 @@ import static by.smirnov.currencyconverterbot.constants.CommonConstants.DELIM;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TARGET;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY_MAIN_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_ALL_CURRENCIES;
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW_MAIN_CURRENCIES;
 
 @Component
 @RequiredArgsConstructor
@@ -39,15 +35,14 @@ public class CallbackHandler {
         long chatId = message.getChatId();
         int messageId = message.getMessageId();
         switch (callbackData) {
-            case TODAY_MAIN_CURRENCIES, TOMORROW_MAIN_CURRENCIES, MAIN_CURRENCIES ->
+            case MAIN_CURRENCIES ->
                     executor.editMessage(dailyRateService.getMainRates(getDate(chatId)), chatId, messageId);
-            case TODAY_ALL_CURRENCIES, TOMORROW_ALL_CURRENCIES, ALL_CURRENCIES ->
-                    executor.editMessage(dailyRateService.getRates(getDate(chatId)), chatId, messageId);
+            case ALL_CURRENCIES -> executor.editMessage(dailyRateService.getRates(getDate(chatId)), chatId, messageId);
             default -> processConversion(message, callbackData, chatId);
         }
     }
 
-    private LocalDate getDate(Long chatId){
+    private LocalDate getDate(Long chatId) {
         return queryDateRepository.getDate(chatId);
     }
 

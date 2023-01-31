@@ -53,7 +53,7 @@ create table if not exists users
             primary key,
     first_name    varchar(20),
     last_name     varchar(20),
-    user_name     varchar(20) not null,
+    user_name     varchar(20),
     registered_at timestamp(6)
 );
 
