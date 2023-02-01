@@ -38,28 +38,24 @@ public class DailyRateServiceImpl implements DailyRateService {
     @Override
     public String getRates(LocalDate date){
         List<Rate> rates = getAllDailyRates(date);
-        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesInfo(rates, date);
     }
 
     @Override
     public String getRatesDynamic(LocalDate date){
         List<Rate> rates = getAllDailyRates(date);
-        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesDynamicInfo(rates, date);
     }
 
     @Override
     public String getMainRates(LocalDate date){
         List<Rate> rates = getMainDailyRates(date);
-        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesInfo(rates, date);
     }
 
     @Override
     public String getMainRatesDynamic(LocalDate date){
         List<Rate> rates = getMainDailyRates(date);
-        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesDynamicInfo(rates, date);
     }
 
@@ -67,7 +63,7 @@ public class DailyRateServiceImpl implements DailyRateService {
         return rateService.getDaylyRates(date);
    }
 
-    public List<Rate> getMainDailyRates(LocalDate date) {
+    private List<Rate> getMainDailyRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
 
         for (MainCurrencies abbreviation : MainCurrencies.values()) {
@@ -79,6 +75,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     }
 
     private String formatRatesInfo(List<Rate> rates, LocalDate date) {
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         StringJoiner joiner = new StringJoiner(DELIMITER);
         String header = String.format(NBRB_RATES_MESSAGE, DateFormatter.formatDate(date));
         joiner.add(header);
@@ -95,6 +92,7 @@ public class DailyRateServiceImpl implements DailyRateService {
     }
 
     private String formatRatesDynamicInfo(List<Rate> rates, LocalDate date) {
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         StringJoiner joiner = new StringJoiner(DELIMITER);
         String header = String.format(NBRB_RATES_MESSAGE, DateFormatter.formatDate(date));
         joiner.add(header);
