@@ -14,8 +14,10 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.time.LocalDate;
 
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.DELIM;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ORIGINAL;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.TARGET;
 
@@ -38,6 +40,8 @@ public class CallbackHandler {
             case MAIN_CURRENCIES ->
                     executor.editMessage(dailyRateService.getMainRates(getDate(chatId)), chatId, messageId);
             case ALL_CURRENCIES -> executor.editMessage(dailyRateService.getRates(getDate(chatId)), chatId, messageId);
+            case MAIN_CURRENCIES_DYNAMIC -> executor.editMessage(dailyRateService.getMainRatesDynamic(getDate(chatId)), chatId, messageId);
+            case ALL_CURRENCIES_DYNAMIC -> executor.editMessage(dailyRateService.getRatesDynamic(getDate(chatId)), chatId, messageId);
             default -> processConversion(message, callbackData, chatId);
         }
     }

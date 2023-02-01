@@ -16,6 +16,7 @@ import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURR
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.ALL_CURRENCIES_NAME_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES;
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME;
 import static by.smirnov.currencyconverterbot.constants.CommonConstants.MAIN_CURRENCIES_NAME_DYNAMIC;
 import static by.smirnov.currencyconverterbot.constants.MessageConstants.DAILY_RATE_TYPE_MESSAGE;
@@ -57,7 +58,7 @@ public class RateButtonsImpl implements RateButtons {
     private List<InlineKeyboardButton> getDynamicButtonsRow(){
         List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
 
-        buttonsRow.add(getButton(MAIN_CURRENCIES_NAME_DYNAMIC, MAIN_CURRENCIES_NAME));
+        buttonsRow.add(getButton(MAIN_CURRENCIES_NAME_DYNAMIC, MAIN_CURRENCIES_DYNAMIC));
         buttonsRow.add(getButton(ALL_CURRENCIES_NAME_DYNAMIC, ALL_CURRENCIES_DYNAMIC));
 
         return buttonsRow;

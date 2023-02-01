@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 import static by.smirnov.currencyconverterbot.entity.MainCurrencies.BYN;
@@ -37,25 +36,46 @@ public class DailyRateServiceImpl implements DailyRateService {
     private final CurrencyService currencyService;
 
     @Override
-    public String getRates(LocalDate date) {
-        List<Rate> rates = rateService.getDaylyRates(date);
+    public String getRates(LocalDate date){
+        List<Rate> rates = getAllDailyRates(date);
         if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
         return formatRatesInfo(rates, date);
     }
 
     @Override
-    public String getMainRates(LocalDate date) {
+    public String getRatesDynamic(LocalDate date){
+        List<Rate> rates = getAllDailyRates(date);
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
+        return formatRatesDynamicInfo(rates, date);
+    }
+
+    @Override
+    public String getMainRates(LocalDate date){
+        List<Rate> rates = getMainDailyRates(date);
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
+        return formatRatesInfo(rates, date);
+    }
+
+    @Override
+    public String getMainRatesDynamic(LocalDate date){
+        List<Rate> rates = getMainDailyRates(date);
+        if (rates.isEmpty()) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
+        return formatRatesDynamicInfo(rates, date);
+    }
+
+    private List<Rate> getAllDailyRates(LocalDate date) {
+        return rateService.getDaylyRates(date);
+   }
+
+    public List<Rate> getMainDailyRates(LocalDate date) {
         List<Rate> rates = new ArrayList<>();
-        boolean isRateListEmpty = true;
 
         for (MainCurrencies abbreviation : MainCurrencies.values()) {
             if(abbreviation == BYN) continue;
             Rate rate = rateService.getRateByDate(String.valueOf(abbreviation), date);
-            rates.add(rate);
-            if(Objects.nonNull(rate)) isRateListEmpty = false;
+            if(rate!=null) rates.add(rate);
         }
-        if (isRateListEmpty) return String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date));
-        return formatMainRatesDynamicInfo(rates, date);
+        return rates;
     }
 
     private String formatRatesInfo(List<Rate> rates, LocalDate date) {
@@ -74,7 +94,7 @@ public class DailyRateServiceImpl implements DailyRateService {
         return joiner.toString();
     }
 
-    private String formatMainRatesDynamicInfo(List<Rate> rates, LocalDate date) {
+    private String formatRatesDynamicInfo(List<Rate> rates, LocalDate date) {
         StringJoiner joiner = new StringJoiner(DELIMITER);
         String header = String.format(NBRB_RATES_MESSAGE, DateFormatter.formatDate(date));
         joiner.add(header);
