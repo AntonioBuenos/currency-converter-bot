@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
+
 @Service
 @RequiredArgsConstructor
 public class RateServiceImpl implements RateService{
@@ -32,7 +34,7 @@ public class RateServiceImpl implements RateService{
     }
 
     public Rate getTodayRate(String abbreviation) {
-        return getRateByDate(abbreviation, LocalDate.now());
+        return getRateByDate(abbreviation, TODAY);
     }
 
     private void checkAndSaveRates(LocalDate date) {
