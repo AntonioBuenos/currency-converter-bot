@@ -19,6 +19,7 @@ public class SpamServiceImpl implements SpamService{
             SendMessage message = new SendMessage();
             message.setChatId(user.getChatId());
             message.setText(text);
+            message.enableHtml(true);
             executor.executeMessage(message);
         }
     }
