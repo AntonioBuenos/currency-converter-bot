@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import static by.smirnov.currencyconverterbot.entity.MainCurrencies.BYN;
@@ -64,14 +66,11 @@ public class DailyRateServiceImpl implements DailyRateService {
    }
 
     private List<Rate> getMainDailyRates(LocalDate date) {
-        List<Rate> rates = new ArrayList<>();
-
-        for (MainCurrencies abbreviation : MainCurrencies.values()) {
-            if(abbreviation == BYN) continue;
-            Rate rate = rateService.getRateByDate(String.valueOf(abbreviation), date);
-            if(rate!=null) rates.add(rate);
-        }
-        return rates;
+        return Arrays.stream(MainCurrencies.values())
+                .filter(currency -> currency != BYN)
+                .map(currency -> rateService.getRateByDate(String.valueOf(currency), date))
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     private String formatRatesInfo(List<Rate> rates, LocalDate date) {
