@@ -14,7 +14,7 @@ import static by.smirnov.currencyconverterbot.constants.CommonConstants.TODAY;
 
 @Service
 @RequiredArgsConstructor
-public class RateServiceImpl implements RateService{
+public class RateServiceImpl implements RateService {
 
     private final RateRepository repository;
     private final NbrbRateClient nbrbRateClient;
@@ -38,13 +38,11 @@ public class RateServiceImpl implements RateService{
     }
 
     private void checkAndSaveRates(LocalDate date) {
-        List<Rate> rates = nbrbRateClient.getRates(date);
-        for (Rate rate : rates) {
-            if (
-                    repository.findRateByAbbreviationAndDate(rate.getAbbreviation(), rate.getDate())
-                            .isEmpty()
-            ) repository.save(rate);
-        }
+        nbrbRateClient.getRates(date).stream()
+                .filter(rate -> repository
+                        .findRateByAbbreviationAndDate(rate.getAbbreviation(), rate.getDate())
+                        .isEmpty())
+                .forEach(repository::save);
     }
 
     private List<Rate> saveAndGetRates(LocalDate date) {
