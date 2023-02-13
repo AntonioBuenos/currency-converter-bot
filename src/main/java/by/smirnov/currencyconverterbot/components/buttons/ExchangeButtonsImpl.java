@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,14 +45,11 @@ public class ExchangeButtonsImpl implements ExchangeButtons {
         long chatId = message.getChatId();
         MainCurrencies originalCurrency = mainCurrencyRepository.getOriginalCurrency(chatId);
         MainCurrencies targetCurrency = mainCurrencyRepository.getTargetCurrency(chatId);
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        for (var currency : MainCurrencies.values()) {
-            buttons.add(
-                    Arrays.asList(
-                            buildButton(ORIGINAL, originalCurrency, currency),
-                            buildButton(TARGET, targetCurrency, currency)));
-        }
-        return buttons;
+        return Arrays.stream(MainCurrencies.values())
+                .map(currency -> Arrays.asList(
+                        buildButton(ORIGINAL, originalCurrency, currency),
+                        buildButton(TARGET, targetCurrency, currency)))
+                .toList();
     }
 
     private String getCurrencyButton(MainCurrencies saved, MainCurrencies current) {
