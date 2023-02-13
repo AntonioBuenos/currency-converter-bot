@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static by.smirnov.currencyconverterbot.constants.LogConstants.COMMAND_LIST_INIT_ERROR;
@@ -24,21 +25,18 @@ public class CommandListInit {
         initCommandMenu();
     }
 
-    private void initCommandMenu(){
+    private void initCommandMenu() {
         try {
             bot.execute(new SetMyCommands(getCommandsMenu(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
-            log.error(COMMAND_LIST_INIT_ERROR, e.getMessage() );
+            log.error(COMMAND_LIST_INIT_ERROR, e.getMessage());
         }
     }
 
-    private List<BotCommand> getCommandsMenu(){
-        List<BotCommand> commandsMenu = new ArrayList<>();
-        for (Commands command : Commands.values()) {
-            if(command != Commands.SPAM && command != Commands.UPD_CURRENCIES) {
-                commandsMenu.add(new BotCommand(command.getCmd(), command.getMessage()));
-            }
-        }
-        return commandsMenu;
+    private List<BotCommand> getCommandsMenu() {
+        return Arrays.stream(Commands.values())
+                .filter(command -> command != Commands.SPAM && command != Commands.UPD_CURRENCIES)
+                .map(command -> new BotCommand(command.getCmd(), command.getMessage()))
+                .toList();
     }
 }
