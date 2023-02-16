@@ -1,6 +1,5 @@
 package by.smirnov.currencyconverterbot.repository;
 
-import by.smirnov.currencyconverterbot.entity.MainCurrencies;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

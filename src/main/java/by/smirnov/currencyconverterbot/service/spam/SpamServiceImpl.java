@@ -9,18 +9,19 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 @Service
 @RequiredArgsConstructor
-public class SpamServiceImpl implements SpamService{
+public class SpamServiceImpl implements SpamService {
 
     private final BotExecutor executor;
     private final UserService userService;
 
-    public void spam(String text){
-        for (User user : userService.findAll()) {
-            SendMessage message = new SendMessage();
-            message.setChatId(user.getChatId());
-            message.setText(text);
-            message.enableHtml(true);
-            executor.executeMessage(message);
-        }
+    public void spam(String text) {
+        userService.findAll()
+                .forEach(user -> {
+                    SendMessage message = new SendMessage();
+                    message.setChatId(user.getChatId());
+                    message.setText(text);
+                    message.enableHtml(true);
+                    executor.executeMessage(message);
+                });
     }
 }
