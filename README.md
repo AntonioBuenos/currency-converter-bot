@@ -7,7 +7,7 @@ ___
 
 ### Development clause:
 
-This Pet Project is currently under development. Its common structure and functionality are to be periodically
+The common structure and functionality of this project are periodically
 amended!
 ___
 

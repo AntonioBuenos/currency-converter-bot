@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.smirnov.currencyconverterbot.constants.CommonConstants.TOMORROW;
 import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_RATES_ERROR;
 
 @Component
