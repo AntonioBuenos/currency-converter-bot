@@ -1,7 +1,6 @@
 package by.smirnov.currencyconverterbot.service.spam;
 
 import by.smirnov.currencyconverterbot.controller.BotExecutor;
-import by.smirnov.currencyconverterbot.entity.User;
 import by.smirnov.currencyconverterbot.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
