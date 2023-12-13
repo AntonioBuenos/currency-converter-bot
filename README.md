@@ -19,7 +19,7 @@ ___
 ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
 ![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
 
-- JDK 17 and Spring 5;
+- JDK 21 and Spring 5;
 - Spring Boot 2;
 - Spring Data JPA Repositories;
 - TelegramBot API;
