@@ -10,48 +10,64 @@
 	</parent>
 	<groupId>by.smirnov</groupId>
 	<artifactId>currency-converter-bot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>2.0.0</version>
 	<name>currency-converter-bot</name>
 	<description>Demo project for Spring Boot</description>
+
 	<properties>
 		<java.version>21</java.version>
-		<telegram.version>6.3.0</telegram.version>
+		<telegram.version>6.8.0</telegram.version>
 		<lombok.version>1.18.30</lombok.version>
+		<postgres.version>42.4.3</postgres.version>
+		<springboot.version>2.7.18</springboot.version>
+		<jackson.version>2.16.0</jackson.version>
+		<neovisionaries.version>1.29</neovisionaries.version>
+		<hibernate.version>5.6.14.Final</hibernate.version>
+		<flyway.version>10.2.0</flyway.version>
+		<caffeine.version>3.1.8</caffeine.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${springboot.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -71,13 +87,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.14.1</version>
+			<version>${jackson.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-modules-java8</artifactId>
-			<version>2.14.1</version>
+			<version>${jackson.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
 		</dependency>
@@ -87,13 +103,13 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
-			<version>2.7.2</version>
+			<version>${springboot.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.4.1</version>
+			<version>${postgres.version}</version>
 		</dependency>
 
 		<dependency>
@@ -105,12 +121,13 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>9.3.0</version>
+			<version>${flyway.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>caffeine</artifactId>
+			<version>${caffeine.version}</version>
 		</dependency>
 
 		<!--Hibernate-->
@@ -118,11 +135,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<!--Enum Countries-->
@@ -130,11 +149,7 @@
 		<dependency>
 			<groupId>com.neovisionaries</groupId>
 			<artifactId>nv-i18n</artifactId>
-			<version>1.29</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
+			<version>${neovisionaries.version}</version>
 		</dependency>
 
 	</dependencies>
