@@ -1,8 +1,8 @@
 package by.smirnov.currencyconverterbot.service.rate;
 
+import by.smirnov.currencyconverterbot.client.NbrbRateClient;
 import by.smirnov.currencyconverterbot.entity.Rate;
 import by.smirnov.currencyconverterbot.repository.RateRepository;
-import by.smirnov.currencyconverterbot.client.NbrbRateClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
