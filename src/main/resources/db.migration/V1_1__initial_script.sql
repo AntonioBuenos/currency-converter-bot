@@ -1,4 +1,6 @@
-create table if not exists currency
+create schema if not exists currency_converter;
+
+create table if not exists currency_converter.currency
 (
     id             bigint       not null
         constraint currency_pk
@@ -21,13 +23,13 @@ create table if not exists currency
     parent_id      bigint       not null
 );
 
-alter table currency
+alter table currency_converter.currency
     owner to postgres;
 
 create unique index if not exists currency_id_uindex
-    on currency (id);
+    on currency_converter.currency (id);
 
-create table if not exists rate
+create table if not exists currency_converter.rate
 (
     id            bigserial
         constraint rate_pk
@@ -40,13 +42,13 @@ create table if not exists rate
     cur_id        bigint           not null
 );
 
-alter table rate
+alter table currency_converter.rate
     owner to postgres;
 
 create unique index if not exists rate_id_uindex
-    on rate (id);
+    on currency_converter.rate (id);
 
-create table if not exists users
+create table if not exists currency_converter.users
 (
     chat_id       bigint      not null
         constraint users_pk
@@ -57,9 +59,9 @@ create table if not exists users
     registered_at timestamp(6)
 );
 
-alter table users
+alter table currency_converter.users
     owner to postgres;
 
 create unique index if not exists users_chat_id_uindex
-    on users (chat_id);
+    on currency_converter.users (chat_id);
 
