@@ -2,15 +2,19 @@ package by.smirnov.currencyconverterbot.service.spam
 
 import by.smirnov.currencyconverterbot.controller.BotExecutor
 import by.smirnov.currencyconverterbot.service.user.UserService
-import lombok.RequiredArgsConstructor
+import groovy.transform.TupleConstructor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 
 @Service
-@RequiredArgsConstructor
+@TupleConstructor(includes = ['executor', 'userService'], includeFields = true, includeProperties = false, force = true)
 class SpamServiceImpl implements SpamService {
 
+    @Autowired
     private final BotExecutor executor
+
+    @Autowired
     private final UserService userService
 
     void spam(String text) {

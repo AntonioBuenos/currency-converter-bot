@@ -3,7 +3,8 @@ package by.smirnov.currencyconverterbot.service.currency
 import by.smirnov.currencyconverterbot.client.NbrbCurrencyClient
 import by.smirnov.currencyconverterbot.entity.Currency
 import by.smirnov.currencyconverterbot.repository.CurrenciesRepository
-import lombok.RequiredArgsConstructor
+import groovy.transform.TupleConstructor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 import java.sql.Timestamp
@@ -12,11 +13,15 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Service
-@RequiredArgsConstructor
+@TupleConstructor(includes = ['repository', 'client'], includeFields = true, includeProperties = false, force = true)
 class CurrencyServiceImpl implements CurrencyService{
 
+    @Autowired
     private final CurrenciesRepository repository
+
+    @Autowired
     private final NbrbCurrencyClient client
+
     private static final String NOT_UPDATED = "Новых единиц валют не найдено"
     private static final String FAILED = "Полученный от НБРБ список отсутствует или не содержит записей"
 

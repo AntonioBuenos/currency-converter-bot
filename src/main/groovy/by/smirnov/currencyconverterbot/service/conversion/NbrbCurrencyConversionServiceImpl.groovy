@@ -2,16 +2,19 @@ package by.smirnov.currencyconverterbot.service.conversion
 
 import by.smirnov.currencyconverterbot.entity.MainCurrencies
 import by.smirnov.currencyconverterbot.service.rate.RateService
+import groovy.transform.TupleConstructor
 import lombok.RequiredArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 import static by.smirnov.currencyconverterbot.entity.MainCurrencies.BYN
 
 @Service
-@RequiredArgsConstructor
+@TupleConstructor(includes = ['rateService'], includeFields = true, includeProperties = false, force = true)
 class NbrbCurrencyConversionServiceImpl implements CurrencyConversionService{
 
-    final RateService rateService
+    @Autowired
+    private final RateService rateService
 
     @Override
     Double convert(MainCurrencies original, MainCurrencies target, double value) {
