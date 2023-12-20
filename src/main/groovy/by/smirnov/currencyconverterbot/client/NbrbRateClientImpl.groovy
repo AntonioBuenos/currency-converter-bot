@@ -3,7 +3,7 @@ package by.smirnov.currencyconverterbot.client
 import by.smirnov.currencyconverterbot.entity.Rate
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import lombok.extern.slf4j.Slf4j
+import groovy.util.logging.Slf4j
 import org.springframework.stereotype.Component
 
 import java.time.LocalDate
@@ -24,8 +24,7 @@ class NbrbRateClientImpl implements NbrbRateClient{
         def mapper = new ObjectMapper().findAndRegisterModules()
         try {
             URL url = URI.create(String.format(NBRB_RATE_BY_DATE_URL, formatDate(date)))::toURL()
-            rates = mapper.readValue(url, new TypeReference() {
-            })
+            rates = mapper.readValue(url, new TypeReference<List<Rate>>() {})
         } catch (IOException e) {
             log.error(GET_RATES_ERROR, e.getMessage())
         }

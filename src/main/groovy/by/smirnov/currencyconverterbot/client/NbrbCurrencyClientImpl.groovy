@@ -3,7 +3,7 @@ package by.smirnov.currencyconverterbot.client
 import by.smirnov.currencyconverterbot.entity.Currency
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import lombok.extern.slf4j.Slf4j
+import groovy.util.logging.Slf4j
 import org.springframework.stereotype.Component
 
 import static by.smirnov.currencyconverterbot.constants.LogConstants.GET_CURRENCIES_ERROR
@@ -19,8 +19,7 @@ class NbrbCurrencyClientImpl implements NbrbCurrencyClient{
         def mapper = new ObjectMapper()
         List<Currency> allCurrencies = []
         try {
-            allCurrencies = mapper.readValue(URI.create(NBRB_ALL_CURRENCIES_URL)::toURL(), new TypeReference() {
-            })
+            allCurrencies = mapper.readValue(URI.create(NBRB_ALL_CURRENCIES_URL)::toURL(), new TypeReference<List<Currency>>() {})
         } catch (IOException e) {
             log.error(GET_CURRENCIES_ERROR, e.getMessage())
         }
