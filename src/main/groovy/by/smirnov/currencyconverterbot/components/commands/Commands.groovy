@@ -1,12 +1,6 @@
-package by.smirnov.currencyconverterbot.components.commands;
+package by.smirnov.currencyconverterbot.components.commands
 
-import lombok.Getter;
-
-import java.util.Arrays;
-import java.util.Objects;
-
-@Getter
-public enum Commands {
+enum Commands {
 
     START("/start", "Стартовая информация о боте"),
     RATES_BY_DATE("/by_date_rates", "Курсы на дату"),
@@ -17,23 +11,18 @@ public enum Commands {
     UPD_CURRENCIES("/upd_currencies", "Загрузить обновление перечня валют с НБРБ"),
     HELP("/help", "Общая информация о боте");
 
-    private final String cmd;
-    private final String message;
+    final String cmd
+    final String message
 
     Commands(String cmd, String message) {
-        this.cmd = cmd;
-        this.message = message;
+        this.cmd = cmd
+        this.message = message
     }
 
-    public boolean equals(String cmd){
-        return this.getCmd().equals(cmd);
-    }
-
-    public static Commands findByCmd(String cmd){
-        return Arrays.stream(Commands.values())
-                .filter(v -> Objects.equals(v.getCmd(), cmd))
+    static Commands findByCmd(String cmd){
+        return Arrays.stream(values())
+                .filter { it.cmd == cmd }
                 .findFirst()
-                .orElse(null);
+                .orElse(null)
     }
-
 }
