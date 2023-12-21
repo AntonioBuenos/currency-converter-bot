@@ -59,7 +59,7 @@ class RateScheduleService {
     }
 
     private static String amendMessage(String text){
-        "${MESSAGE_NEW_RATES} ${getDayOfWeekName()}:%n%n${text}"
+        "${MESSAGE_NEW_RATES} ${getDayOfWeekName()}:\n\n${text}"
     }
 
     private static void sleepMinutes(Integer minutes) {
