@@ -33,8 +33,8 @@ class NbrbCurrencyConversionServiceImpl implements CurrencyConversionService{
 
     private double countScale(MainCurrencies currency) {
         def todayRate = rateService.getTodayRate(String.valueOf(currency))
-        def rate = todayRate.getOfficialRate()
-        def scale = todayRate.getScale()
+        def rate = todayRate.officialRate
+        def scale = todayRate.scale
 
         rate / scale
     }

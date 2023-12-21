@@ -1,90 +1,85 @@
-package by.smirnov.currencyconverterbot.entity;
+package by.smirnov.currencyconverterbot.entity
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonSetter
+import groovy.transform.Canonical
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.sql.Timestamp;
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+import java.sql.Timestamp
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Canonical
 @Entity
 @Table(name = "currency")
-public class Currency {
+class Currency {
 
     @Id
     @JsonSetter("Cur_ID")
     @Column(name = "id")
-    private Long id;
+    Long id
 
     @JsonSetter("Cur_ParentID")
     @Column(name = "parent_id")
-    private Long parentId;
+    Long parentId
 
     @JsonSetter("Cur_Code")
     @Column(name = "code")
-    private String code;
+    String code
 
     @JsonSetter("Cur_Abbreviation")
     @Column(name = "abbreviation")
-    private String abbreviation;
+    String abbreviation
 
     @JsonSetter("Cur_Name")
     @Column(name = "name")
-    private String name;
+    String name
 
     @JsonSetter("Cur_Name_Bel")
     @Column(name = "name_eng")
-    private String nameEng;
+    String nameEng
 
     @JsonSetter("Cur_Name_Eng")
     @Column(name = "name_bel")
-    private String nameBel;
+    String nameBel
 
     @JsonSetter("Cur_QuotName")
     @Column(name = "quot_name")
-    private String quotName;
+    String quotName
 
     @JsonSetter("Cur_QuotName_Bel")
     @Column(name = "quot_name_eng")
-    private String quotNameEng;
+    String quotNameEng
 
     @JsonSetter("Cur_QuotName_Eng")
     @Column(name = "quot_name_bel")
-    private String quotNameBel;
+    String quotNameBel
 
     @JsonSetter("Cur_NameMulti")
     @Column(name = "name_multi")
-    private String nameMulti;
+    String nameMulti
 
     @JsonSetter("Cur_Name_BelMulti")
     @Column(name = "name_multi_eng")
-    private String nameMultiEng;
+    String nameMultiEng
 
     @JsonSetter("Cur_Name_EngMulti")
     @Column(name = "name_multi_bel")
-    private String nameMultiBel;
+    String nameMultiBel
 
     @JsonSetter("Cur_Scale")
     @Column(name = "scale")
-    private Long scale;
+    Long scale
 
     @JsonSetter("Cur_Periodicity")
     @Column(name = "periodicity")
-    private Integer periodicity;
+    Integer periodicity
 
     @JsonSetter("Cur_DateStart")
     @Column(name = "date_start")
-    private Timestamp dateStart;
+    Timestamp dateStart
 
     @JsonSetter("Cur_DateEnd")
     @Column(name = "date_end")
-    private Timestamp dateEnd;
-
+    Timestamp dateEnd
 }

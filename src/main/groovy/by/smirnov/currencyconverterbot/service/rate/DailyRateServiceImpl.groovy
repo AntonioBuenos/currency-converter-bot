@@ -1,5 +1,6 @@
 package by.smirnov.currencyconverterbot.service.rate
 
+
 import by.smirnov.currencyconverterbot.entity.Currency
 import by.smirnov.currencyconverterbot.entity.MainCurrencies
 import by.smirnov.currencyconverterbot.entity.Rate
@@ -79,9 +80,9 @@ class DailyRateServiceImpl implements DailyRateService {
             String rateInfo
             if (!it) rateInfo = RATE_NOT_FOUND
             else {
-                Currency currency = currencyService.getActualCurrency(it.getAbbreviation(), date)
+                Currency currency = currencyService.getActualCurrency(it.abbreviation, date)
                 rateInfo = currency ?
-                        String.format(RATE_LINE_FORMAT, currency.getName(), it.getOfficialRate(), showScale(it)) :
+                        String.format(RATE_LINE_FORMAT, currency.name, it.officialRate, showScale(it)) :
                         NO_CURRENCY_MESSAGE
             }
             joiner.add(rateInfo)
@@ -100,7 +101,7 @@ class DailyRateServiceImpl implements DailyRateService {
             else {
                 rateInfo = String.format(DYNAMIC_RATE_LINE_FORMAT,
                         getRateSymbol(it),
-                        it.getOfficialRate(),
+                        it.officialRate,
                         getDynamics(it),
                         showScale(it))
             }
@@ -109,34 +110,34 @@ class DailyRateServiceImpl implements DailyRateService {
         return joiner.toString()
     }
 
-    private String getRateSymbol(Rate rate) {
-        String abbr = rate.getAbbreviation()
+    private static String getRateSymbol(Rate rate) {
+        String abbr = rate.abbreviation
         MainCurrencies currency
         try {
             currency = MainCurrencies.valueOf(abbr)
         }catch (IllegalArgumentException ignored){
             return abbr
         }
-        return currency.getSymbol()
+        return currency.symbol
     }
 
-    private String showScale(Rate rate) {
-        Long scale = rate.getScale()
+    private static String showScale(Rate rate) {
+        Long scale = rate.scale
         return scale == 1 ? EMPTY : String.format(SCALE_FORMAT, scale, getRateSymbol(rate))
     }
 
     private String getDynamics(Rate rate) {
         def dayBeforeRate = rateService
-                .getRateByDate(rate.getAbbreviation(), rate.getDate().minusDays(1))
-                .getOfficialRate()
-        def thisRate = rate.getOfficialRate()
+                .getRateByDate(rate.abbreviation, rate.date.minusDays(1))
+                .officialRate
+        def thisRate = rate.officialRate
         if (dayBeforeRate < thisRate) return String.format(DYNAMICS_FORMAT, UP, getPercentage(thisRate, dayBeforeRate))
         else if (dayBeforeRate > thisRate)
             return String.format(DYNAMICS_FORMAT, DOWN, getPercentage(thisRate, dayBeforeRate)* (-1))
         else return NO_DYNAMIC
     }
 
-    private double getPercentage(double thisRate, double dayBeforeRate) {
+    private static double getPercentage(double thisRate, double dayBeforeRate) {
         (thisRate * 100 / dayBeforeRate) - 100
     }
 

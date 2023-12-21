@@ -21,7 +21,7 @@ class SpamServiceImpl implements SpamService {
         userService.findAll()
                 .forEach {
                     SendMessage message = new SendMessage()
-                    message.setChatId(it.getChatId())
+                    message.setChatId(it.chatId)
                     message.setText(text)
                     message.enableHtml(true)
                     executor.executeMessage(message)

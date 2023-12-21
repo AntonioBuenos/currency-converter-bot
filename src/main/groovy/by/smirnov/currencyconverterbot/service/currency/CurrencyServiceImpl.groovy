@@ -31,7 +31,7 @@ class CurrencyServiceImpl implements CurrencyService{
         if(!allCurrencies) return FAILED
         int countNew = 0
         for (Currency currency : allCurrencies) {
-            if(!repository.findById(currency.getId())) {
+            if(!repository.findById(currency.id)) {
                 repository.save(currency)
                 countNew++
             }
