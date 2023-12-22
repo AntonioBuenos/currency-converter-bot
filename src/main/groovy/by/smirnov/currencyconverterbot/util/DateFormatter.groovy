@@ -13,7 +13,7 @@ class DateFormatter {
             DATE_PATTERN,
             Locale.of("ru", "RU"))
 
-    static String formatDate(LocalDate date) {
+    static String format(LocalDate date) {
         date.format(FORMATTER)
     }
 }

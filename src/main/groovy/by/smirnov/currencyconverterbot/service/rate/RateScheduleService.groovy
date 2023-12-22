@@ -33,7 +33,7 @@ class RateScheduleService {
     @Scheduled(cron = '${cron.scheduler}')
     public void deliverRateNews() {
         LocalDate date = getNextDate()
-        String noRate = String.format(NO_RATES_MESSAGE, DateFormatter.formatDate(date))
+        String noRate = String.format(NO_RATES_MESSAGE, DateFormatter.format(date))
         String rateNews
         while (true){
             rateNews = dailyRateService.getMainRatesDynamic(date)

@@ -10,7 +10,7 @@ import static by.smirnov.currencyconverterbot.constants.LogConstants.PARSE_ERROR
 @Slf4j
 class DoubleParser {
 
-    static Double parseDouble(String messageText) {
+    static Double parse(String messageText) {
         try {
             return Double.parseDouble(messageText)
         } catch (NullPointerException | NumberFormatException e) {

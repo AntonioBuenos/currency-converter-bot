@@ -142,6 +142,6 @@ class DailyRateServiceImpl implements DailyRateService {
     }
 
     private static String formatDate(LocalDate date) {
-        DateFormatter.formatDate(date)
+        DateFormatter.format(date)
     }
 }

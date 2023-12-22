@@ -15,7 +15,7 @@ class DateParser {
     private static final String INPUT_DATE_PATTERN = "d.M.yyyy"
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN)
 
-    static LocalDate parseDate(String text) {
+    static LocalDate parse(String text) {
         String date = extractDate(text, INPUT_DATE_REGEX)
         LocalDate.parse(date, FORMATTER) //add error handling
     }
