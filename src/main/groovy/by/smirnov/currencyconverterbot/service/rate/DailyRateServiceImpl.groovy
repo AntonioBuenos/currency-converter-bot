@@ -24,8 +24,8 @@ class DailyRateServiceImpl implements DailyRateService {
     @Autowired
     private final CurrencyService currencyService
 
-    public static final String NBRB_RATES_MESSAGE =
-            "<strong>Официальные курсы валют, установленные Национальным банком РБ на %s г.:</strong>"
+    public static final String NBRB_RATES_MESSAGE = "<strong>Официальные курсы валют, установленные Национальным \
+            банком РБ на %s г.:</strong>"
     public static final String NO_RATES_MESSAGE = "<b><i>Информация о курсах на %s г. отсутствует</i></b>"
     public static final String NO_CURRENCY_MESSAGE = "Информация о валюте отсутствует"
     public static final String RATE_NOT_FOUND = "курс не найден"
