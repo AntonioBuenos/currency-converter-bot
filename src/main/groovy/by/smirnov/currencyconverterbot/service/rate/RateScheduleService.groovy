@@ -31,9 +31,9 @@ class RateScheduleService {
 
     @Async
     @Scheduled(cron = '${cron.scheduler}')
-    public void deliverRateNews() {
-        LocalDate date = getNextDate()
-        String noRate = String.format(NO_RATES_MESSAGE, DateFormatter.format(date))
+    void deliverRateNews() {
+        def date = getNextDate()
+        def noRate = String.format(NO_RATES_MESSAGE, DateFormatter.format(date))
         String rateNews
         while (true){
             rateNews = dailyRateService.getMainRatesDynamic(date)
@@ -47,14 +47,14 @@ class RateScheduleService {
     }
 
     private static LocalDate getNextDate(){
-        DayOfWeek day = TODAY.getDayOfWeek()
+        def day = TODAY.getDayOfWeek()
         if(day == DayOfWeek.FRIDAY) return TOMORROW.plusDays(2)
         else if(day == DayOfWeek.SATURDAY) return TOMORROW.plusDays(1)
         else return TOMORROW
     }
 
     private static String getDayOfWeekName(){
-        LocalDate date = getNextDate()
+        def date = getNextDate()
         date == TOMORROW ? "завтра" : "понедельник"
     }
 
