@@ -21,5 +21,4 @@ ___
 - TelegramBot API;
 - Build: Maven;
 - Client: Jackson;
-- DB: PostgreSQL DB, Flyway;
-- Slf4j & Logback logging.
+- DB: PostgreSQL DB, Flyway.
