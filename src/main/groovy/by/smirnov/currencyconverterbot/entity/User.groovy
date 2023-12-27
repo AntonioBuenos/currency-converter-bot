@@ -3,11 +3,11 @@ package by.smirnov.currencyconverterbot.entity
 import groovy.transform.Canonical
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.builder.Builder
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
 import java.sql.Timestamp
 
 @Canonical

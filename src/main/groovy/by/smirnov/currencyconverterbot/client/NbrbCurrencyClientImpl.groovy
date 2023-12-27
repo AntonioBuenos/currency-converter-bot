@@ -1,6 +1,6 @@
 package by.smirnov.currencyconverterbot.client
 
-
+import by.smirnov.currencyconverterbot.entity.Currency
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Slf4j
@@ -23,6 +23,6 @@ class NbrbCurrencyClientImpl implements NbrbCurrencyClient{
         } catch (IOException e) {
             log.error(GET_CURRENCIES_ERROR, e.getMessage())
         }
-        return allCurrencies;
+        return allCurrencies
     }
 }

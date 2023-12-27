@@ -5,7 +5,6 @@ import lombok.experimental.UtilityClass
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@UtilityClass
 class DateFormatter {
 
     private static final String DATE_PATTERN = "d MMMM yyyy"

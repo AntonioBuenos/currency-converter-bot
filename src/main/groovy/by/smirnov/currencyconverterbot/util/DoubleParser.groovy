@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass
 import static by.smirnov.currencyconverterbot.constants.LogConstants.PARSE_ERROR
 
 
-@UtilityClass
 @Slf4j
 class DoubleParser {
 

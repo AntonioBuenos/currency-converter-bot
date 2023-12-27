@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@UtilityClass
 @Slf4j
 class DateParser {
 
